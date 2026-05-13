@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556290841007",
+    "project_id": "kidsapp-39001",
+    "storage_bucket": "kidsapp-39001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556290841007:android:5cbbf841fd2836ae44b75a",
+        "android_client_info": {
+          "package_name": "com.duyts.poker.manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556290841007-cavvt4i37kkr7pqrej3ep6qr0rsoovpr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLPNHgxhxVQf8sd1xJCw1Lt-kmWsXYZL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556290841007-cavvt4i37kkr7pqrej3ep6qr0rsoovpr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
