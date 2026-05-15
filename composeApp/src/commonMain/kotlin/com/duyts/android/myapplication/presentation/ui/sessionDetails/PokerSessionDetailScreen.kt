@@ -21,6 +21,8 @@ import com.duyts.android.myapplication.domain.model.PokerSession
 import com.duyts.android.myapplication.domain.model.Transaction
 import com.duyts.android.myapplication.domain.model.TransactionType
 import com.duyts.android.myapplication.presentation.theme.AppTheme
+import com.duyts.android.myapplication.presentation.ui.components.alertDialog.*
+import com.duyts.android.myapplication.presentation.ui.components.modalBottomSheet.HistoryBottomSheet
 import com.duyts.android.myapplication.presentation.ui.sessionDetails.components.*
 import com.duyts.android.myapplication.presentation.viewmodel.PokerSessionDetailUiState
 import org.jetbrains.compose.resources.stringResource
@@ -41,8 +43,6 @@ fun PokerSessionDetailScreen(
 	var showTransferDialog by remember { mutableStateOf(false) }
 	var showEditTitleDialog by remember { mutableStateOf(false) }
 	var showHistory by remember { mutableStateOf(false) }
-	var playerName by remember { mutableStateOf("") }
-	var sessionTitle by remember { mutableStateOf("") }
 
 	var showPlayerAmountSheet by remember { mutableStateOf<Pair<Player, TransactionType>?>(null) }
 
@@ -52,17 +52,18 @@ fun PokerSessionDetailScreen(
 		topBar = {
 			TopAppBar(
 				title = {
-					val title = (state as? PokerSessionDetailUiState.Success)?.session?.title
-						?: stringResource(Res.string.session_detail)
+					val successState = state as? PokerSessionDetailUiState.Success
+					val title = successState?.session?.title ?: stringResource(Res.string.session_detail)
+					val isOwner = successState?.isOwner == true
+
 					Row(
 						verticalAlignment = Alignment.CenterVertically,
-						modifier = Modifier.clickable(enabled = state is PokerSessionDetailUiState.Success) {
-							sessionTitle = title
+						modifier = Modifier.clickable(enabled = isOwner) {
 							showEditTitleDialog = true
 						}
 					) {
 						Text(title)
-						if (state is PokerSessionDetailUiState.Success) {
+						if (isOwner) {
 							Spacer(Modifier.width(4.dp))
 							Icon(
 								imageVector = Icons.Default.Edit,
@@ -79,23 +80,26 @@ fun PokerSessionDetailScreen(
 					}
 				},
 				actions = {
+					val isOwner = (state as? PokerSessionDetailUiState.Success)?.isOwner == true
 					IconButton(
 						onClick = { showHistory = true },
 						enabled = state is PokerSessionDetailUiState.Success
 					) {
 						Icon(Icons.Default.History, contentDescription = stringResource(Res.string.history))
 					}
-					IconButton(
-						onClick = { showTransferDialog = true },
-						enabled = state is PokerSessionDetailUiState.Success
-					) {
-						Icon(Icons.Default.SwapHoriz, contentDescription = stringResource(Res.string.transfer))
+					if (isOwner) {
+						IconButton(
+							onClick = { showTransferDialog = true }
+						) {
+							Icon(Icons.Default.SwapHoriz, contentDescription = stringResource(Res.string.transfer))
+						}
 					}
 				}
 			)
 		},
 		floatingActionButton = {
-			if (state is PokerSessionDetailUiState.Success) {
+			val successState = state as? PokerSessionDetailUiState.Success
+			if (successState != null && successState.isOwner) {
 				FloatingActionButton(onClick = { showAddPlayerDialog = true }) {
 					Icon(Icons.Default.Add, contentDescription = stringResource(Res.string.add_player))
 				}
@@ -148,6 +152,7 @@ fun PokerSessionDetailScreen(
 					items(currentSession.players) { player ->
 						PlayerItem(
 							player = player,
+							isOwner = state.isOwner,
 							onBuyIn = { showPlayerAmountSheet = player to TransactionType.BUY_IN },
 							onCashOut = {
 								showPlayerAmountSheet = player to TransactionType.CASH_OUT
@@ -156,14 +161,14 @@ fun PokerSessionDetailScreen(
 					}
 				}
 
-				if (showPlayerAmountSheet != null) {
+				showPlayerAmountSheet?.let { playerAmount ->
 					PlayerAmountBottomSheet(
-						player = showPlayerAmountSheet!!.first,
-						type = showPlayerAmountSheet!!.second,
+						player = playerAmount.first,
+						type = playerAmount.second,
 						suggestions = state.playerAmountSuggestion,
 						onDismiss = { showPlayerAmountSheet = null },
 						onConfirm = { amount ->
-							val (player, type) = showPlayerAmountSheet!!
+							val (player, type) = playerAmount
 							if (type == TransactionType.BUY_IN) {
 								onBuyIn(player.id, amount)
 							} else {
@@ -174,100 +179,42 @@ fun PokerSessionDetailScreen(
 					)
 				}
 
-				if (showHistory) {
-					ModalBottomSheet(
-						onDismissRequest = { showHistory = false },
-						sheetState = sheetState
-					) {
-						LazyColumn(
-							modifier = Modifier.fillMaxWidth().padding(16.dp),
-							verticalArrangement = Arrangement.spacedBy(8.dp)
-						) {
-							item {
-								Text(
-									text = stringResource(Res.string.history),
-									style = MaterialTheme.typography.headlineSmall,
-									modifier = Modifier.padding(bottom = 8.dp)
-								)
-							}
-							items(currentSession.transactions.reversed()) { transaction ->
-								TransactionItem(transaction, currentSession.players)
-							}
-							item {
-								Spacer(modifier = Modifier.height(32.dp))
-							}
-						}
+				HistoryBottomSheet(
+					visible = showHistory,
+					transactions = currentSession.transactions,
+					players = currentSession.players,
+					sheetState = sheetState,
+					onDismissRequest = { showHistory = false }
+				)
+
+				AddPlayerDialog(
+					visible = showAddPlayerDialog,
+					onDismissRequest = { showAddPlayerDialog = false },
+					onAddPlayer = { name ->
+						onAddPlayer(name)
+						showAddPlayerDialog = false
 					}
-				}
+				)
 
-				if (showAddPlayerDialog) {
-					AlertDialog(
-						onDismissRequest = { showAddPlayerDialog = false },
-						title = { Text(stringResource(Res.string.add_player)) },
-						text = {
-							TextField(
-								value = playerName,
-								onValueChange = { playerName = it },
-								label = { Text(stringResource(Res.string.player_name)) }
-							)
-						},
-						confirmButton = {
-							Button(onClick = {
-								if (playerName.isNotBlank()) {
-									onAddPlayer(playerName)
-									playerName = ""
-									showAddPlayerDialog = false
-								}
-							}) {
-								Text(stringResource(Res.string.add))
-							}
-						},
-						dismissButton = {
-							TextButton(onClick = { showAddPlayerDialog = false }) {
-								Text(stringResource(Res.string.cancel))
-							}
-						}
-					)
-				}
+				TransferDialog(
+					visible = showTransferDialog,
+					players = currentSession.players,
+					onDismiss = { showTransferDialog = false },
+					onTransfer = { fromId, toId, amount ->
+						onTransfer(fromId, toId, amount)
+						showTransferDialog = false
+					}
+				)
 
-				if (showTransferDialog) {
-					TransferDialog(
-						players = currentSession.players,
-						onDismiss = { showTransferDialog = false },
-						onTransfer = { fromId, toId, amount ->
-							onTransfer(fromId, toId, amount)
-							showTransferDialog = false
-						}
-					)
-				}
-
-				if (showEditTitleDialog) {
-					AlertDialog(
-						onDismissRequest = { showEditTitleDialog = false },
-						title = { Text(stringResource(Res.string.edit_session_title)) },
-						text = {
-							TextField(
-								value = sessionTitle,
-								onValueChange = { sessionTitle = it },
-							)
-						},
-						confirmButton = {
-							Button(onClick = {
-								if (sessionTitle.isNotBlank()) {
-									onUpdateTitle(sessionTitle)
-									showEditTitleDialog = false
-								}
-							}) {
-								Text(stringResource(Res.string.confirm))
-							}
-						},
-						dismissButton = {
-							TextButton(onClick = { showEditTitleDialog = false }) {
-								Text(stringResource(Res.string.cancel))
-							}
-						}
-					)
-				}
+				EditTitleDialog(
+					visible = showEditTitleDialog,
+					initialTitle = currentSession.title,
+					onDismissRequest = { showEditTitleDialog = false },
+					onUpdateTitle = { title ->
+						onUpdateTitle(title)
+						showEditTitleDialog = false
+					}
+				)
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import com.duyts.android.myapplication.util.DateTimeUtils
 import com.duyts.android.myapplication.util.IdGenerator
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.where
 import kotlinx.datetime.Clock
@@ -28,7 +29,7 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 	private val sessionsCollection = firestore.collection("sessions")
 
 	override fun getSessions(userId: String): Flow<List<PokerSession>> {
-		return sessionsCollection.where { "ownerId" equalTo userId }
+		return sessionsCollection.where { "participantIds" contains userId }
 			.snapshots()
 			.flatMapLatest { snapshot ->
 				if (snapshot.documents.isEmpty()) return@flatMapLatest flowOf(emptyList())
@@ -80,6 +81,7 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 			smallBlind = CurrencyUtils.dollarsToCents(smallBlind),
 			bigBlind = CurrencyUtils.dollarsToCents(bigBlind),
 			ownerId = userId,
+			participantIds = listOf(userId),
 			createdAt = Clock.System.now().toEpochMilliseconds()
 		)
 		return try {
@@ -90,14 +92,21 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 		}
 	}
 
-	override suspend fun addPlayer(sessionId: String, name: String) {
+	override suspend fun addPlayer(sessionId: String, id: String, name: String) {
 		val playerRef = sessionsCollection.document(sessionId).collection("players")
-			.document(IdGenerator.generate("ply"))
+			.document(id)
 		val player = FirestorePlayer(
-			id = playerRef.id,
+			id = id,
 			name = name
 		)
 		playerRef.set(player)
+
+		// If the ID doesn't look like a generated ply. prefix, it's a Firebase UID
+		if (!id.startsWith("ply.")) {
+			sessionsCollection.document(sessionId).update(
+				"participantIds" to FieldValue.arrayUnion(id)
+			)
+		}
 	}
 
 	override suspend fun buyIn(sessionId: String, playerId: String, amount: Float) {

@@ -3,6 +3,7 @@ package com.duyts.android.myapplication.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.repository.AuthRepository
 import com.duyts.android.myapplication.domain.usecase.AddPlayerUseCase
 import com.duyts.android.myapplication.domain.usecase.BuyInUseCase
 import com.duyts.android.myapplication.domain.usecase.CashOutUseCase
@@ -23,21 +24,29 @@ class PokerSessionDetailViewModel(
 	private val cashOutUseCase: CashOutUseCase,
 	private val transferBetweenPlayersUseCase: TransferBetweenPlayersUseCase,
 	private val updateSessionTitleUseCase: UpdateSessionTitleUseCase,
+	authRepository: AuthRepository,
 ) : ViewModel() {
 
-	val uiState: StateFlow<PokerSessionDetailUiState> = getSessionByIdUseCase(sessionId)
-		.map { session ->
-			if (session == null) {
-				PokerSessionDetailUiState.Error("Session not found")
-			} else {
-				PokerSessionDetailUiState.Success(session)
-			}
+	val currentUser = authRepository.currentUser
+		.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+	val uiState: StateFlow<PokerSessionDetailUiState> = combine(
+		getSessionByIdUseCase(sessionId),
+		authRepository.currentUser
+	) { session, user ->
+		if (session == null) {
+			PokerSessionDetailUiState.Error("Session not found")
+		} else {
+			PokerSessionDetailUiState.Success(
+				session = session,
+				isOwner = session.ownerId == user?.id
+			)
 		}
-		.stateIn(
-			scope = viewModelScope,
-			started = SharingStarted.WhileSubscribed(5000),
-			initialValue = PokerSessionDetailUiState.Loading
-		)
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5000),
+		initialValue = PokerSessionDetailUiState.Loading
+	)
 
 	fun addPlayer(name: String) {
 		viewModelScope.launch {
@@ -74,6 +83,7 @@ sealed class PokerSessionDetailUiState {
 	object Loading : PokerSessionDetailUiState()
 	data class Success(
 		val session: PokerSession,
+		val isOwner: Boolean = false
 	) : PokerSessionDetailUiState() {
 
 		val playerAmountSuggestion: List<Float>

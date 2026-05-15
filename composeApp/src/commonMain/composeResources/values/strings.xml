@@ -54,4 +54,7 @@
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
+    <string name="join">Join</string>
+    <string name="join_session">Join Session</string>
+    <string name="no_transactions">No transactions yet</string>
 </resources>

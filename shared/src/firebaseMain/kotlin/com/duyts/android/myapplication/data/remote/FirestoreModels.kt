@@ -23,12 +23,13 @@ data class FirestoreSession(
     val smallBlind: Int = 0,
     val bigBlind: Int = 0,
     val ownerId: String = "",
+    val participantIds: List<String> = emptyList(),
     val createdAt: Long = 0L
 )
 
 @Serializable
 data class FirestorePlayer(
-    val id: String = "", // Format: ply.uuid
+    val id: String = "",
     val name: String = "",
     val buyIn: Int = 0,
     val cashOut: Int = 0,
@@ -50,7 +51,9 @@ fun FirestoreSession.toDomain(players: List<FirestorePlayer>, transactions: List
     title = title,
     smallBlind = CurrencyUtils.centsToDollars(smallBlind),
     bigBlind = CurrencyUtils.centsToDollars(bigBlind),
+    ownerId = ownerId,
     players = players.map { it.toDomain() },
+    participantIds = participantIds,
     transactions = transactions,
     createdAt = createdAt
 )

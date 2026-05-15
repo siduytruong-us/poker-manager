@@ -40,6 +40,8 @@ class PokerLocalDataSourceImpl(
                     title = finalTitle,
                     smallBlind = smallBlind,
                     bigBlind = bigBlind,
+                    ownerId = userId,
+                    participantIds = listOf(userId),
                     createdAt = Clock.System.now().toEpochMilliseconds()
                 )
             }
@@ -49,12 +51,20 @@ class PokerLocalDataSourceImpl(
         }
     }
 
-    override suspend fun addPlayer(sessionId: String, name: String) {
+    override suspend fun addPlayer(sessionId: String, id: String, name: String) {
         database.sessions.update { sessions ->
             sessions.map { session ->
                 if (session.id == sessionId) {
-                    val newPlayer = Player(id = IdGenerator.generate("ply"), name = name)
-                    session.copy(players = session.players + newPlayer)
+                    val newPlayer = Player(id = id, name = name)
+                    val newParticipantIds = if (!session.participantIds.contains(id)) {
+                        session.participantIds + id
+                    } else {
+                        session.participantIds
+                    }
+                    session.copy(
+                        players = session.players + newPlayer,
+                        participantIds = newParticipantIds
+                    )
                 } else session
             }
         }

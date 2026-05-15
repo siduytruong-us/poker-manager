@@ -89,6 +89,7 @@ fun PokerSessionListScreen(
                         items(sessions) { session ->
                             SessionItem(
                                 session = session,
+                                isOwner = session.ownerId == state.currentUserId,
                                 onClick = { onSessionClick(session.id) },
                                 onDelete = { sessionToDelete = session.id }
                             )
@@ -185,6 +186,7 @@ fun PokerSessionListScreen(
 @Composable
 private fun SessionItem(
     session: PokerSession,
+    isOwner: Boolean = false,
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -211,8 +213,10 @@ private fun SessionItem(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = stringResource(Res.string.delete_session))
+            if (isOwner) {
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(Res.string.delete_session))
+                }
             }
         }
     }
@@ -223,18 +227,22 @@ private fun SessionItem(
 fun PokerSessionListScreenPreview() {
     AppTheme {
         PokerSessionListScreen(
-            state = PokerSessionListUiState.Success(mapOf(
-                "Today" to listOf(
-                    PokerSession(
-                        id = "ses.1",
-                        title = "Friday Night Poker",
-                        players = listOf(
-                            Player(id = "ply.1", name = "Player 1", buyIn = 5f, cashOut = 7f),
-                            Player(id = "ply.2", name = "Player 2", buyIn = 5f, cashOut = 4f)
+            state = PokerSessionListUiState.Success(
+                groupedSessions = mapOf(
+                    "Today" to listOf(
+                        PokerSession(
+                            id = "ses.1",
+                            title = "Friday Night Poker",
+                            ownerId = "user1",
+                            players = listOf(
+                                Player(id = "user1", name = "Player 1", buyIn = 5f, cashOut = 7f),
+                                Player(id = "ply.2", name = "Player 2", buyIn = 5f, cashOut = 4f)
+                            )
                         )
                     )
-                )
-            )),
+                ),
+                currentUserId = "user1"
+            ),
             onSessionClick = {},
             onCreateSession = { _, _, _ -> },
             onDeleteSession = {}

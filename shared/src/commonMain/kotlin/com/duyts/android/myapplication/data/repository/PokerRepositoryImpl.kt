@@ -28,8 +28,8 @@ class PokerRepositoryImpl(
     override suspend fun createSession(userId: String, title: String?, smallBlind: Float, bigBlind: Float): Result<String> =
         dataSource.createSession(userId, title, smallBlind, bigBlind)
 
-    override suspend fun addPlayer(sessionId: String, name: String) {
-        dataSource.addPlayer(sessionId, name)
+    override suspend fun addPlayer(sessionId: String, id: String, name: String) {
+        dataSource.addPlayer(sessionId, id, name)
     }
 
     override suspend fun buyIn(sessionId: String, playerId: String, amount: Float) {

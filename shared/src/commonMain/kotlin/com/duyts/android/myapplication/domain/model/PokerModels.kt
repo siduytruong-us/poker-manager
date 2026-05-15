@@ -34,7 +34,9 @@ data class PokerSession(
     val title: String,
     val smallBlind: Float = 0f,
     val bigBlind: Float = 0f,
+    val ownerId: String = "",
     val players: List<Player> = emptyList(),
+    val participantIds: List<String> = emptyList(),
     val transactions: List<Transaction> = emptyList(),
     val isFinished: Boolean = false,
     val createdAt: Long = 0L

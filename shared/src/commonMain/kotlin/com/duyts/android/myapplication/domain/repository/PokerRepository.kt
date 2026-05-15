@@ -8,7 +8,7 @@ interface PokerRepository {
     fun getSessions(userId: String): Flow<List<PokerSession>>
     fun getSessionById(sessionId: String): Flow<PokerSession?>
     suspend fun createSession(userId: String, title: String?, smallBlind: Float, bigBlind: Float): Result<String>
-    suspend fun addPlayer(sessionId: String, name: String)
+    suspend fun addPlayer(sessionId: String, id: String, name: String)
     suspend fun buyIn(sessionId: String, playerId: String, amount: Float)
     suspend fun cashOut(sessionId: String, playerId: String, amount: Float)
     suspend fun transferBetweenPlayers(sessionId: String, fromPlayerId: String, toPlayerId: String, amount: Float)

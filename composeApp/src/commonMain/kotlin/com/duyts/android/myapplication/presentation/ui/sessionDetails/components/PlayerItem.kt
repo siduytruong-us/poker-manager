@@ -14,6 +14,7 @@ import myapplication.composeapp.generated.resources.*
 @Composable
 fun PlayerItem(
     player: Player,
+    isOwner: Boolean = false,
     onBuyIn: () -> Unit,
     onCashOut: () -> Unit
 ) {
@@ -43,17 +44,20 @@ fun PlayerItem(
                 ),
                 style = MaterialTheme.typography.bodySmall
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(
-                    onClick = onBuyIn,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text(stringResource(Res.string.buy_in)) }
-                Button(
-                    onClick = onCashOut,
-                    modifier = Modifier.weight(1f),
-                ) { Text(stringResource(Res.string.cash_out)) }
+            
+            if (isOwner) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        onClick = onBuyIn,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) { Text(stringResource(Res.string.buy_in)) }
+                    Button(
+                        onClick = onCashOut,
+                        modifier = Modifier.weight(1f),
+                    ) { Text(stringResource(Res.string.cash_out)) }
+                }
             }
         }
     }

@@ -9,11 +9,24 @@ import androidx.navigation.compose.composable
 import com.duyts.android.myapplication.di.PokerComponent
 import com.duyts.android.myapplication.presentation.navigation.Route
 import com.duyts.android.myapplication.presentation.ui.login.LoginScreen
+import com.duyts.android.myapplication.presentation.ui.splash.SplashScreen
 
 fun NavGraphBuilder.authGraph(
     navController: NavController,
     component: PokerComponent
 ) {
+    composable<Route.Splash> {
+        val viewModel = viewModel { component.splashViewModel }
+        SplashScreen(
+            viewModel = viewModel,
+            onNavigate = { route ->
+                navController.navigate(route) {
+                    popUpTo(Route.Splash) { inclusive = true }
+                }
+            }
+        )
+    }
+
     composable<Route.Login> {
         val viewModel = viewModel {
             component.loginViewModel
@@ -23,7 +36,7 @@ fun NavGraphBuilder.authGraph(
         LoginScreen(
             state = state,
             onLoginSuccess = {
-                navController.navigate(Route.Main) {
+                navController.navigate(Route.Main()) {
                     popUpTo(Route.Login) { inclusive = true }
                 }
             },

@@ -39,13 +39,7 @@ class AuthRepositoryImpl : AuthRepository {
                             photoUrl = fsUser.photoUrl
                         )
                     } else {
-                        // Fallback to Firebase Auth info if Firestore profile doesn't exist yet
-                        AuthUser(
-                            id = firebaseUser.uid,
-                            email = firebaseUser.email,
-                            displayName = firebaseUser.displayName,
-                            photoUrl = firebaseUser.photoURL
-                        )
+                       null
                     }
                 }
         }

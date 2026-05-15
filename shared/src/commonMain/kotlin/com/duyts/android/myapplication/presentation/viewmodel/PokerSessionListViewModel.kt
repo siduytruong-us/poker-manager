@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.repository.AuthRepository
 import com.duyts.android.myapplication.domain.usecase.CreateSessionUseCase
 import com.duyts.android.myapplication.domain.usecase.DeleteSessionUseCase
 import com.duyts.android.myapplication.domain.usecase.GetSessionsUseCase
@@ -16,25 +17,30 @@ import me.tatarka.inject.annotations.Inject
 class PokerSessionListViewModel(
     getSessionsUseCase: GetSessionsUseCase,
     private val createSessionUseCase: CreateSessionUseCase,
-    private val deleteSessionUseCase: DeleteSessionUseCase
+    private val deleteSessionUseCase: DeleteSessionUseCase,
+    authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    val uiState: StateFlow<PokerSessionListUiState> = getSessionsUseCase()
-        .map { sessions -> 
-            val groupedSessions = sessions
-                .sortedByDescending { it.createdAt }
-                .groupBy { DateTimeUtils.formatDate(it.createdAt) }
-            
-            PokerSessionListUiState.Success(groupedSessions) 
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PokerSessionListUiState.Loading
+    val uiState: StateFlow<PokerSessionListUiState> = combine(
+        getSessionsUseCase(),
+        authRepository.currentUser
+    ) { sessions, user ->
+        val groupedSessions = sessions
+            .sortedByDescending { it.createdAt }
+            .groupBy { DateTimeUtils.formatDate(it.createdAt) }
+
+        PokerSessionListUiState.Success(
+            groupedSessions = groupedSessions,
+            currentUserId = user?.id
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = PokerSessionListUiState.Loading
+    )
 
     fun createSession(title: String?, smallBlind: Float, bigBlind: Float) {
         viewModelScope.launch {
@@ -58,6 +64,9 @@ class PokerSessionListViewModel(
 
 sealed class PokerSessionListUiState {
     object Loading : PokerSessionListUiState()
-    data class Success(val groupedSessions: Map<String, List<PokerSession>>) : PokerSessionListUiState()
+    data class Success(
+        val groupedSessions: Map<String, List<PokerSession>>,
+        val currentUserId: String? = null
+    ) : PokerSessionListUiState()
     data class Error(val message: String) : PokerSessionListUiState()
 }

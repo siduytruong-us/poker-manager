@@ -51,4 +51,5 @@
     <string name="dark_mode">Modo oscuro</string>
     <string name="toggle_theme">Alternar tema de la aplicación</string>
     <string name="language">Idioma</string>
+    <string name="no_transactions">No hay transacciones aún</string>
 </resources>
