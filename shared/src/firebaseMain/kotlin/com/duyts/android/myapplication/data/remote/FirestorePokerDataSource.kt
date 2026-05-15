@@ -1,5 +1,6 @@
 package com.duyts.android.myapplication.data.remote
 
+import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.data.local.PokerLocalDataSource
 import com.duyts.android.myapplication.domain.model.PokerSession
 import com.duyts.android.myapplication.domain.model.TransactionType
@@ -23,14 +24,11 @@ import me.tatarka.inject.annotations.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirestorePokerDataSource : PokerRemoteDataSource {
 	private val firestore = Firebase.firestore
-	private val auth = Firebase.auth
-	private val userId get() = auth.currentUser?.uid
 
 	private val sessionsCollection = firestore.collection("sessions")
 
-	override fun getSessions(): Flow<List<PokerSession>> {
-		val uid = userId ?: return flowOf(emptyList())
-		return sessionsCollection.where { "ownerId" equalTo uid }
+	override fun getSessions(userId: String): Flow<List<PokerSession>> {
+		return sessionsCollection.where { "ownerId" equalTo userId }
 			.snapshots()
 			.flatMapLatest { snapshot ->
 				if (snapshot.documents.isEmpty()) return@flatMapLatest flowOf(emptyList())
@@ -72,8 +70,7 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 			}
 	}
 
-	override suspend fun createSession(title: String?, smallBlind: Float, bigBlind: Float) {
-		val uid = userId ?: return
+	override suspend fun createSession(userId: String, title: String?, smallBlind: Float, bigBlind: Float): Result<String> {
 		val docId = IdGenerator.generate("ses")
 		val docRef = sessionsCollection.document(docId)
 		val finalTitle = title?.takeIf { it.isNotBlank() } ?: "Session ${DateTimeUtils.formatCurrentTimeHHmm()}"
@@ -82,10 +79,15 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 			title = finalTitle,
 			smallBlind = CurrencyUtils.dollarsToCents(smallBlind),
 			bigBlind = CurrencyUtils.dollarsToCents(bigBlind),
-			ownerId = uid,
+			ownerId = userId,
 			createdAt = Clock.System.now().toEpochMilliseconds()
 		)
-		docRef.set(session)
+		return try {
+			docRef.set(session)
+			Result.Success(docRef.id)
+		} catch (e: Exception) {
+			Result.Error(message = e.message, exception = e)
+		}
 	}
 
 	override suspend fun addPlayer(sessionId: String, name: String) {

@@ -5,13 +5,19 @@ import com.duyts.android.myapplication.data.local.PokerLocalDataSource
 import com.duyts.android.myapplication.data.local.PokerLocalDataSourceImpl
 import com.duyts.android.myapplication.data.remote.PokerRemoteDataSource
 import com.duyts.android.myapplication.data.repository.WasmAuthRepository
+import com.duyts.android.myapplication.data.repository.WasmStorageRepository
 import com.duyts.android.myapplication.domain.repository.AuthRepository
+import com.duyts.android.myapplication.domain.repository.StorageRepository
 import me.tatarka.inject.annotations.Provides
 
 actual interface PlatformComponent {
     @Provides
     @AppScope
     fun provideAuthRepository(impl: WasmAuthRepository): AuthRepository = impl
+
+    @Provides
+    @AppScope
+    fun provideStorageRepository(impl: WasmStorageRepository): StorageRepository = impl
 
     @Provides
     @AppScope

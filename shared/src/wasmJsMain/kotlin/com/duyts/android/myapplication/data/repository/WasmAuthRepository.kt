@@ -18,8 +18,12 @@ external fun firebaseSignInWithGoogle(idToken: String, onSuccess: () -> Unit, on
 external fun firebaseSignOut()
 
 @OptIn(ExperimentalWasmJsInterop::class)
-@JsFun("(callback) => { firebase.auth().onAuthStateChanged((user) => { if (user) { callback(user.uid, user.email, user.displayName); } else { callback(null, null, null); } }); }")
-external fun firebaseOnAuthStateChanged(callback: (String?, String?, String?) -> Unit)
+@JsFun("(callback) => { firebase.auth().onAuthStateChanged((user) => { if (user) { callback(user.uid, user.email, user.displayName, user.photoURL); } else { callback(null, null, null, null); } }); }")
+external fun firebaseOnAuthStateChanged(callback: (String?, String?, String?, String?) -> Unit)
+
+@OptIn(ExperimentalWasmJsInterop::class)
+@JsFun("(displayName, photoUrl, onSuccess, onError) => { firebase.auth().currentUser.updateProfile({ displayName: displayName, photoURL: photoUrl }).then(() => onSuccess()).catch((e) => onError(e.message)); }")
+external fun firebaseUpdateProfile(displayName: String?, photoUrl: String?, onSuccess: () -> Unit, onError: (String) -> Unit)
 
 @Inject
 class WasmAuthRepository : AuthRepository {
@@ -27,12 +31,13 @@ class WasmAuthRepository : AuthRepository {
     override val currentUser: Flow<AuthUser?> = _currentUser
 
     init {
-        firebaseOnAuthStateChanged { uid, email, displayName ->
+        firebaseOnAuthStateChanged { uid, email, displayName, photoUrl ->
             _currentUser.value = if (uid != null) {
                 AuthUser(
                     id = uid,
                     email = email,
-                    displayName = displayName
+                    displayName = displayName,
+                    photoUrl = photoUrl
                 )
             } else {
                 null
@@ -50,5 +55,13 @@ class WasmAuthRepository : AuthRepository {
 
     override suspend fun signOut() {
         firebaseSignOut()
+    }
+
+    override suspend fun updateProfile(displayName: String?, photoUrl: String?): Result<Unit> = suspendCancellableCoroutine { continuation ->
+        firebaseUpdateProfile(displayName, photoUrl, {
+            continuation.resume(Result.success(Unit))
+        }, { error ->
+            continuation.resume(Result.failure(Exception(error)))
+        })
     }
 }

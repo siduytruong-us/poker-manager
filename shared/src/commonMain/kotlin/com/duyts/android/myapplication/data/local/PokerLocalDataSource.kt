@@ -1,5 +1,6 @@
 package com.duyts.android.myapplication.data.local
 
+import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.data.PokerDataSource
 import com.duyts.android.myapplication.domain.model.Player
 import com.duyts.android.myapplication.domain.model.PokerSession
@@ -21,7 +22,7 @@ class PokerLocalDataSourceImpl(
     private val database: InMemoryDatabase
 ) : PokerLocalDataSource {
 
-    override fun getSessions(): Flow<List<PokerSession>> = database.sessions.asStateFlow()
+    override fun getSessions(userId: String): Flow<List<PokerSession>> = database.sessions.asStateFlow()
 
     override fun getSessionById(sessionId: String): Flow<PokerSession?> {
         return database.sessions.asStateFlow().map { sessions ->
@@ -29,16 +30,22 @@ class PokerLocalDataSourceImpl(
         }
     }
 
-    override suspend fun createSession(title: String?, smallBlind: Float, bigBlind: Float) {
-        database.sessions.update { list ->
-            val finalTitle = title?.takeIf { it.isNotBlank() } ?: "Session ${DateTimeUtils.formatCurrentTimeHHmm()}"
-            list + PokerSession(
-                id = IdGenerator.generate("ses"),
-                title = finalTitle,
-                smallBlind = smallBlind,
-                bigBlind = bigBlind,
-                createdAt = Clock.System.now().toEpochMilliseconds()
-            )
+    override suspend fun createSession(userId: String, title: String?, smallBlind: Float, bigBlind: Float): Result<String> {
+        val id = IdGenerator.generate("ses")
+        return try {
+            database.sessions.update { list ->
+                val finalTitle = title?.takeIf { it.isNotBlank() } ?: "Session ${DateTimeUtils.formatCurrentTimeHHmm()}"
+                list + PokerSession(
+                    id = id,
+                    title = finalTitle,
+                    smallBlind = smallBlind,
+                    bigBlind = bigBlind,
+                    createdAt = Clock.System.now().toEpochMilliseconds()
+                )
+            }
+            Result.Success(id)
+        } catch (e: Exception) {
+            Result.Error(message = e.message, exception = e)
         }
     }
 

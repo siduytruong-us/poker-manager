@@ -1,5 +1,6 @@
 package com.duyts.android.myapplication.data.repository
 
+import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.data.PokerDataSource
 import com.duyts.android.myapplication.data.local.PokerLocalDataSource
 import com.duyts.android.myapplication.data.remote.PokerRemoteDataSource
@@ -19,14 +20,13 @@ class PokerRepositoryImpl(
 
     private val dataSource: PokerDataSource get() = remoteDataSource ?: localDataSource
 
-    override fun getSessions(): Flow<List<PokerSession>> = dataSource.getSessions()
+    override fun getSessions(userId: String): Flow<List<PokerSession>> = dataSource.getSessions(userId)
 
     override fun getSessionById(sessionId: String): Flow<PokerSession?> = 
         dataSource.getSessionById(sessionId)
 
-    override suspend fun createSession(title: String?, smallBlind: Float, bigBlind: Float) {
-        dataSource.createSession(title, smallBlind, bigBlind)
-    }
+    override suspend fun createSession(userId: String, title: String?, smallBlind: Float, bigBlind: Float): Result<String> =
+        dataSource.createSession(userId, title, smallBlind, bigBlind)
 
     override suspend fun addPlayer(sessionId: String, name: String) {
         dataSource.addPlayer(sessionId, name)

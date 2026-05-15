@@ -2,6 +2,7 @@ package com.duyts.android.myapplication.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.domain.model.PokerSession
 import com.duyts.android.myapplication.domain.usecase.CreateSessionUseCase
 import com.duyts.android.myapplication.domain.usecase.DeleteSessionUseCase
@@ -17,6 +18,9 @@ class PokerSessionListViewModel(
     private val createSessionUseCase: CreateSessionUseCase,
     private val deleteSessionUseCase: DeleteSessionUseCase
 ) : ViewModel() {
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
 
     val uiState: StateFlow<PokerSessionListUiState> = getSessionsUseCase()
         .map { sessions -> 
@@ -34,7 +38,14 @@ class PokerSessionListViewModel(
 
     fun createSession(title: String?, smallBlind: Float, bigBlind: Float) {
         viewModelScope.launch {
-            createSessionUseCase(title, smallBlind, bigBlind)
+            when (val result = createSessionUseCase(title, smallBlind, bigBlind)) {
+                is Result.Success -> {
+                    _error.value = null
+                }
+                is Result.Error -> {
+                    _error.value = result.message ?: result.exception?.message ?: "Failed to create session"
+                }
+            }
         }
     }
 

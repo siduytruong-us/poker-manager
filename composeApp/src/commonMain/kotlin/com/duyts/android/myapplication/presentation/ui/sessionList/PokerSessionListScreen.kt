@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,8 +31,7 @@ fun PokerSessionListScreen(
     state: PokerSessionListUiState,
     onSessionClick: (String) -> Unit,
     onCreateSession: (title: String?, smallBlind: Float, bigBlind: Float) -> Unit,
-    onDeleteSession: (String) -> Unit,
-    onSettingsClick: () -> Unit
+    onDeleteSession: (String) -> Unit
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
     var sessionToDelete by remember { mutableStateOf<String?>(null) }
@@ -45,11 +43,6 @@ fun PokerSessionListScreen(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.poker_sessions)) },
-                actions = {
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
-                    }
-                }
             )
         },
         floatingActionButton = {
@@ -225,7 +218,7 @@ private fun SessionItem(
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun PokerSessionListScreenPreview() {
     AppTheme {
@@ -244,8 +237,7 @@ fun PokerSessionListScreenPreview() {
             )),
             onSessionClick = {},
             onCreateSession = { _, _, _ -> },
-            onDeleteSession = {},
-            onSettingsClick = {}
+            onDeleteSession = {}
         )
     }
 }

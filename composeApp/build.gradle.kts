@@ -19,10 +19,13 @@ kotlin {
         }
     }
     
-    js {
-        browser()
-        binaries.executable()
-    }
+        js {
+            browser()
+            binaries.executable()
+            compilations.getByName("main").defaultSourceSet.dependencies {
+                implementation(libs.ktor.client.js)
+            }
+        }
     
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -39,6 +42,9 @@ kotlin {
             isStatic = true
             export(projects.shared)
         }
+        iosTarget.compilations.getByName("main").defaultSourceSet.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
     }
     
     sourceSets {
@@ -46,6 +52,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.play.services.auth)
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -62,6 +69,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             api(libs.kotlin.inject.runtime)
             api(projects.shared)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

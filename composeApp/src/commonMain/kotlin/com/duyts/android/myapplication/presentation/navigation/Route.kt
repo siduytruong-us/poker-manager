@@ -11,6 +11,9 @@ sealed class Route {
     data object Login : Route()
 
     @Serializable
+    data object Main : Route()
+
+    @Serializable
     data object PokerSessionList : Route()
 
     @Serializable
@@ -21,4 +24,10 @@ sealed class Route {
 
     @Serializable
     data object Settings : Route()
+
+    @Serializable
+    data object Profile : Route()
+
+    @Serializable
+    data object EditProfile : Route()
 }

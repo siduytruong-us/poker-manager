@@ -22,7 +22,7 @@ actual fun rememberGoogleSignInLauncher(
     onIdTokenReceived: (String) -> Unit,
     onError: (String) -> Unit
 ): GoogleSignInLauncher {
-    val clientId = "556290841007-cavvt4i37kkr7pqrej3ep6qr0rsoovpr.apps.googleusercontent.com"
+    val clientId = "556290841007-ehbtbldvi00l84kpq0hb29j2gd49nlkf.apps.googleusercontent.com"
     
     return remember {
         object : GoogleSignInLauncher {

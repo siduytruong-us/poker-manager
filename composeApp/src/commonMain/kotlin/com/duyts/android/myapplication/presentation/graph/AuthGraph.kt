@@ -23,7 +23,7 @@ fun NavGraphBuilder.authGraph(
         LoginScreen(
             state = state,
             onLoginSuccess = {
-                navController.navigate(Route.PokerSessionList) {
+                navController.navigate(Route.Main) {
                     popUpTo(Route.Login) { inclusive = true }
                 }
             },

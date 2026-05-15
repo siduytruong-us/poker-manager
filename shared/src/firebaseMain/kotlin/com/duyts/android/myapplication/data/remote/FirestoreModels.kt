@@ -8,6 +8,15 @@ import com.duyts.android.myapplication.util.CurrencyUtils
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class FirestoreUser(
+    val id: String = "",
+    val email: String? = null,
+    val displayName: String? = null,
+    val photoUrl: String? = null,
+    val createdAt: Long = 0L
+)
+
+@Serializable
 data class FirestoreSession(
     val id: String = "", // Format: ses.uuid
     val title: String = "",

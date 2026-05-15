@@ -51,4 +51,7 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="toggle_theme">Toggle app theme</string>
     <string name="language">Language</string>
+    <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Logout</string>
 </resources>
