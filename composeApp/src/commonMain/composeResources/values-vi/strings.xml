@@ -54,4 +54,10 @@
     <string name="no_transactions">Chưa có lịch sử giao dịch</string>
     <string name="complete_session">Kết thúc buổi chơi</string>
     <string name="complete_session_confirmation">Bạn có chắc chắn muốn kết thúc buổi chơi này? Tất cả các giao dịch và tên người chơi sẽ bị khóa.</string>
+    <string name="statistics">Thống kê</string>
+    <string name="sessions">Số buổi chơi</string>
+    <string name="net_profit">Lợi nhuận ròng</string>
+    <string name="profit_over_time">Lợi nhuận theo thời gian</string>
+    <string name="session_history">Lịch sử buổi chơi</string>
+    <string name="no_completed_sessions">Chưa có buổi chơi nào hoàn thành</string>
 </resources>

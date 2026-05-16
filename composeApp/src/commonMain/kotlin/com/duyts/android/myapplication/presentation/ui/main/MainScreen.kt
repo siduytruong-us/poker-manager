@@ -35,6 +35,7 @@ import myapplication.composeapp.generated.resources.settings
 import myapplication.composeapp.generated.resources.cancel
 import myapplication.composeapp.generated.resources.join
 import myapplication.composeapp.generated.resources.join_session
+import myapplication.composeapp.generated.resources.statistics
 import org.jetbrains.compose.resources.stringResource
 
 data class BottomNavItem(

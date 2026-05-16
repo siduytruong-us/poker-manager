@@ -24,6 +24,7 @@ firebase-kotlin = "2.4.0"
 google-services = "4.4.4"
 coil = "3.4.0"
 ktor = "3.5.0"
+charty = "3.0.0-rc01"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -63,6 +64,7 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 ktor_client_okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor_client_darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor_client_js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+charty = { module = "com.himanshoe:charty", version.ref = "charty" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

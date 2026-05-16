@@ -54,4 +54,10 @@
     <string name="no_transactions">No hay transacciones aún</string>
     <string name="complete_session">Completar sesión</string>
     <string name="complete_session_confirmation">¿Estás seguro de que quieres completar esta sesión? Esto bloqueará todas las transacciones y nombres de jugadores.</string>
+    <string name="statistics">Estadísticas</string>
+    <string name="sessions">Sesiones</string>
+    <string name="net_profit">Beneficio neto</string>
+    <string name="profit_over_time">Beneficio a lo largo del tiempo</string>
+    <string name="session_history">Historial de sesiones</string>
+    <string name="no_completed_sessions">No hay sesiones completadas aún</string>
 </resources>

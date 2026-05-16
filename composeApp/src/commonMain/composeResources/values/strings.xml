@@ -60,4 +60,9 @@
     <string name="complete_session">Complete Session</string>
     <string name="complete_session_confirmation">Are you sure you want to complete this session? This will lock all transactions and player names.</string>
     <string name="statistics">Statistics</string>
+    <string name="sessions">Sessions</string>
+    <string name="net_profit">Net Profit</string>
+    <string name="profit_over_time">Profit Over Time</string>
+    <string name="session_history">Session History</string>
+    <string name="no_completed_sessions">No completed sessions yet</string>
 </resources>

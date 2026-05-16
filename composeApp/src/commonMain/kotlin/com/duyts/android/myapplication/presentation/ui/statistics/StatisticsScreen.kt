@@ -1,22 +1,50 @@
 package com.duyts.android.myapplication.presentation.ui.statistics
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.duyts.android.myapplication.presentation.viewmodel.StatisticsUiState
+import com.duyts.android.myapplication.domain.repository.SessionPerformance
+import com.duyts.android.myapplication.presentation.theme.AppTheme
 import com.duyts.android.myapplication.presentation.ui.profile.PerformanceItem
 import com.duyts.android.myapplication.presentation.ui.profile.ProfileStatItem
+import com.duyts.android.myapplication.presentation.viewmodel.StatisticsUiState
 import com.duyts.android.myapplication.util.CurrencyUtils
+import com.duyts.android.myapplication.util.DateTimeUtils
+import com.himanshoe.charty.color.ChartyColor
+import com.himanshoe.charty.common.config.ChartScaffoldConfig
+import com.himanshoe.charty.line.LineChart
+import com.himanshoe.charty.line.config.LineChartConfig
+import com.himanshoe.charty.line.data.LineData
 import myapplication.composeapp.generated.resources.Res
+import myapplication.composeapp.generated.resources.net_profit
+import myapplication.composeapp.generated.resources.no_completed_sessions
+import myapplication.composeapp.generated.resources.profit_over_time
+import myapplication.composeapp.generated.resources.session_history
+import myapplication.composeapp.generated.resources.sessions
 import myapplication.composeapp.generated.resources.statistics
+import myapplication.composeapp.generated.resources.total_buy_in
+import myapplication.composeapp.generated.resources.total_cash_out
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,11 +82,10 @@ fun StatisticsScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             ProfileStatItem(
-                                label = "Total Buy-in",
-                                value = CurrencyUtils.format(state.totalBuyIn)
-                            )
+								stringResource(Res.string.total_buy_in), CurrencyUtils.format(state.totalBuyIn)
+							)
                             ProfileStatItem(
-                                label = "Total Cash-out",
+                                label = stringResource(Res.string.total_cash_out),
                                 value = CurrencyUtils.format(state.totalCashOut)
                             )
                         }
@@ -69,11 +96,11 @@ fun StatisticsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             ProfileStatItem(
-                                label = "Sessions",
+                                label = stringResource(Res.string.sessions),
                                 value = state.sessionsPlayed.toString()
                             )
                             ProfileStatItem(
-                                label = "Net Profit",
+                                label = stringResource(Res.string.net_profit),
                                 value = CurrencyUtils.format(state.totalProfit),
                                 valueColor = if (state.totalProfit >= 0f) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                             )
@@ -85,7 +112,7 @@ fun StatisticsScreen(
             if (state.performanceHistory.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Profit Over Time",
+                        text = stringResource(Res.string.profit_over_time),
                         style = MaterialTheme.typography.titleLarge
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -93,15 +120,14 @@ fun StatisticsScreen(
                         history = state.performanceHistory.reversed(),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+                            .height(300.dp)
                             .padding(16.dp)
                     )
                 }
 
                 item {
                     Text(
-                        text = "Session History",
+                        text = stringResource(Res.string.session_history),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(top = 8.dp)
                     )
@@ -116,7 +142,10 @@ fun StatisticsScreen(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 64.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No completed sessions yet", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            text = stringResource(Res.string.no_completed_sessions),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }
@@ -130,42 +159,80 @@ fun StatisticsScreen(
 
 @Composable
 fun ProfitChart(
-    history: List<com.duyts.android.myapplication.domain.repository.SessionPerformance>,
+    history: List<SessionPerformance>,
     modifier: Modifier = Modifier
 ) {
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val errorColor = MaterialTheme.colorScheme.error
-    val onSurface = MaterialTheme.colorScheme.onSurfaceVariant
+    if (history.isEmpty()) return
 
-    Canvas(modifier = modifier) {
-        if (history.isEmpty()) return@Canvas
-
-        val spacing = size.width / (history.size + 1)
-        val maxProfit = history.maxOf { kotlin.math.abs(it.profit) }.coerceAtLeast(10f)
-        val centerY = size.height / 2
-        val scale = (size.height / 2.2f) / maxProfit // Keep some margin
-
-        // Baseline
-        drawLine(
-            color = onSurface,
-            start = Offset(0f, centerY),
-            end = Offset(size.width, centerY),
-            strokeWidth = 1.dp.toPx(),
-            alpha = 0.3f
+    var currentCumulative = 0f
+    val lineData = history.map { performance ->
+        currentCumulative += performance.profit
+        LineData(
+            label = DateTimeUtils.formatDate(performance.completedAt).substringBefore(" ").take(5),
+            value = currentCumulative
         )
+    }
 
-        // Draw individual session profit bars
-        history.forEachIndexed { index, performance ->
-            val x = spacing * (index + 1)
-            val barHeight = performance.profit * scale
-            val color = if (performance.profit >= 0) primaryColor else errorColor
-            
-            drawLine(
-                color = color,
-                start = Offset(x, centerY),
-                end = Offset(x, centerY - barHeight),
-                strokeWidth = 12.dp.toPx()
+    LineChart(
+        modifier = modifier,
+        data = { lineData },
+        scaffoldConfig = ChartScaffoldConfig(
+            axisColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            labelTextStyle = MaterialTheme.typography.labelSmall.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+        ),
+        color = ChartyColor.Solid(MaterialTheme.colorScheme.primary),
+        lineConfig = LineChartConfig(
+            lineWidth = 3f,
+            showPoints = true,
+            pointRadius = 4f,
+            smoothCurve = true
+        )
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun StatisticsScreenPreview() {
+    val mockHistory = listOf(
+        SessionPerformance(
+            sessionId = "1",
+            sessionTitle = "Friday Night",
+            completedAt = 1715000000000L,
+            profit = 50f,
+            buyIn = 100f,
+            cashOut = 150f,
+            adjustment = 0f
+        ),
+        SessionPerformance(
+            sessionId = "2",
+            sessionTitle = "Saturday Cash",
+            completedAt = 1715100000000L,
+            profit = -20f,
+            buyIn = 100f,
+            cashOut = 80f,
+            adjustment = 0f
+        ),
+        SessionPerformance(
+            sessionId = "3",
+            sessionTitle = "Home Game",
+            completedAt = 1715200000000L,
+            profit = 100f,
+            buyIn = 200f,
+            cashOut = 300f,
+            adjustment = 0f
+        )
+    )
+    AppTheme {
+        StatisticsScreen(
+            state = StatisticsUiState(
+                performanceHistory = mockHistory,
+                totalProfit = 130f,
+                totalBuyIn = 400f,
+                totalCashOut = 530f,
+                sessionsPlayed = 3
             )
-        }
+        )
     }
 }
