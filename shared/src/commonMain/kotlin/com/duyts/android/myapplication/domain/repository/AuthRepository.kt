@@ -9,6 +9,16 @@ interface AuthRepository {
     suspend fun updateProfile(displayName: String?, photoUrl: String?): Result<Unit>
 }
 
+data class SessionPerformance(
+    val sessionId: String,
+    val sessionTitle: String,
+    val completedAt: Long,
+    val profit: Float,
+    val buyIn: Float,
+    val cashOut: Float,
+    val adjustment: Float
+)
+
 data class AuthUser(
     val id: String,
     val email: String?,

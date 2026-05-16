@@ -17,6 +17,9 @@ sealed class Route {
     data object PokerSessionList : Route()
 
     @Serializable
+    data object Statistics : Route()
+
+    @Serializable
     data class PokerSessionDetail(val sessionId: String) : Route()
 
     @Serializable

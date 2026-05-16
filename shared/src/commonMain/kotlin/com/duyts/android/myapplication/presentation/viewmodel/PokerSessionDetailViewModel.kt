@@ -7,8 +7,11 @@ import com.duyts.android.myapplication.domain.repository.AuthRepository
 import com.duyts.android.myapplication.domain.usecase.AddPlayerUseCase
 import com.duyts.android.myapplication.domain.usecase.BuyInUseCase
 import com.duyts.android.myapplication.domain.usecase.CashOutUseCase
+import com.duyts.android.myapplication.domain.usecase.CompleteSessionUseCase
 import com.duyts.android.myapplication.domain.usecase.GetSessionByIdUseCase
 import com.duyts.android.myapplication.domain.usecase.TransferBetweenPlayersUseCase
+import com.duyts.android.myapplication.domain.usecase.UpdatePlayerArchiveStatusUseCase
+import com.duyts.android.myapplication.domain.usecase.UpdatePlayerNameUseCase
 import com.duyts.android.myapplication.domain.usecase.UpdateSessionTitleUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,6 +27,9 @@ class PokerSessionDetailViewModel(
 	private val cashOutUseCase: CashOutUseCase,
 	private val transferBetweenPlayersUseCase: TransferBetweenPlayersUseCase,
 	private val updateSessionTitleUseCase: UpdateSessionTitleUseCase,
+	private val updatePlayerNameUseCase: UpdatePlayerNameUseCase,
+	private val updatePlayerArchiveStatusUseCase: UpdatePlayerArchiveStatusUseCase,
+	private val completeSessionUseCase: CompleteSessionUseCase,
 	authRepository: AuthRepository,
 ) : ViewModel() {
 
@@ -75,6 +81,24 @@ class PokerSessionDetailViewModel(
 	fun updateTitle(title: String) {
 		viewModelScope.launch {
 			updateSessionTitleUseCase(sessionId, title)
+		}
+	}
+
+	fun updatePlayerName(playerId: String, name: String) {
+		viewModelScope.launch {
+			updatePlayerNameUseCase(sessionId, playerId, name)
+		}
+	}
+
+	fun updatePlayerArchiveStatus(playerId: String, isArchived: Boolean) {
+		viewModelScope.launch {
+			updatePlayerArchiveStatusUseCase(sessionId, playerId, isArchived)
+		}
+	}
+
+	fun completeSession() {
+		viewModelScope.launch {
+			completeSessionUseCase(sessionId)
 		}
 	}
 }

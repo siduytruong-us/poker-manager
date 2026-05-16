@@ -2,6 +2,7 @@ package com.duyts.android.myapplication.data.remote
 
 import com.duyts.android.myapplication.domain.model.Player
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.model.SessionStatus
 import com.duyts.android.myapplication.domain.model.Transaction
 import com.duyts.android.myapplication.domain.model.TransactionType
 import com.duyts.android.myapplication.util.CurrencyUtils
@@ -17,6 +18,21 @@ data class FirestoreUser(
 )
 
 @Serializable
+enum class FirestoreSessionStatus {
+    ACTIVE, COMPLETED
+}
+
+fun FirestoreSessionStatus.toDomain(): SessionStatus = when (this) {
+    FirestoreSessionStatus.ACTIVE -> SessionStatus.ACTIVE
+    FirestoreSessionStatus.COMPLETED -> SessionStatus.COMPLETED
+}
+
+fun SessionStatus.toFirestore(): FirestoreSessionStatus = when (this) {
+    SessionStatus.ACTIVE -> FirestoreSessionStatus.ACTIVE
+    SessionStatus.COMPLETED -> FirestoreSessionStatus.COMPLETED
+}
+
+@Serializable
 data class FirestoreSession(
     val id: String = "", // Format: ses.uuid
     val title: String = "",
@@ -24,7 +40,9 @@ data class FirestoreSession(
     val bigBlind: Int = 0,
     val ownerId: String = "",
     val participantIds: List<String> = emptyList(),
-    val createdAt: Long = 0L
+    val status: FirestoreSessionStatus = FirestoreSessionStatus.ACTIVE,
+    val createdAt: Long = 0L,
+    val completedAt: Long? = null
 )
 
 @Serializable
@@ -33,7 +51,8 @@ data class FirestorePlayer(
     val name: String = "",
     val buyIn: Int = 0,
     val cashOut: Int = 0,
-    val adjustment: Int = 0
+    val adjustment: Int = 0,
+    val isArchived: Boolean = false
 )
 
 @Serializable
@@ -55,7 +74,9 @@ fun FirestoreSession.toDomain(players: List<FirestorePlayer>, transactions: List
     players = players.map { it.toDomain() },
     participantIds = participantIds,
     transactions = transactions,
-    createdAt = createdAt
+    status = status.toDomain(),
+    createdAt = createdAt,
+    completedAt = completedAt
 )
 
 fun FirestorePlayer.toDomain() = Player(
@@ -63,7 +84,8 @@ fun FirestorePlayer.toDomain() = Player(
     name = name,
     buyIn = CurrencyUtils.centsToDollars(buyIn),
     cashOut = CurrencyUtils.centsToDollars(cashOut),
-    adjustment = CurrencyUtils.centsToDollars(adjustment)
+    adjustment = CurrencyUtils.centsToDollars(adjustment),
+    isArchived = isArchived
 )
 
 fun FirestoreTransaction.toDomain() = Transaction(

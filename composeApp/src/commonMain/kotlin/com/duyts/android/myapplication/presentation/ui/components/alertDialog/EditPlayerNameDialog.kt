@@ -7,27 +7,28 @@ import myapplication.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun EditTitleDialog(
+fun EditPlayerNameDialog(
     visible: Boolean,
-    initialTitle: String,
+    initialName: String,
     onDismissRequest: () -> Unit,
-    onUpdateTitle: (String) -> Unit
+    onUpdateName: (String) -> Unit
 ) {
     if (visible) {
-        var sessionTitle by remember { mutableStateOf(initialTitle) }
+        var playerName by remember { mutableStateOf(initialName) }
 
         AlertDialog(
             onDismissRequest = onDismissRequest,
             text = {
                 TextField(
-                    value = sessionTitle,
-                    onValueChange = { sessionTitle = it },
+                    value = playerName,
+                    onValueChange = { playerName = it },
+                    label = { Text(stringResource(Res.string.player_name)) }
                 )
             },
             confirmButton = {
                 Button(onClick = {
-                    if (sessionTitle.isNotBlank()) {
-                        onUpdateTitle(sessionTitle)
+                    if (playerName.isNotBlank()) {
+                        onUpdateName(playerName)
                         onDismissRequest()
                     }
                 }) {

@@ -4,6 +4,7 @@ import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.data.PokerDataSource
 import com.duyts.android.myapplication.domain.model.Player
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.model.SessionStatus
 import com.duyts.android.myapplication.domain.model.Transaction
 import com.duyts.android.myapplication.domain.model.TransactionType
 import com.duyts.android.myapplication.util.DateTimeUtils
@@ -42,6 +43,7 @@ class PokerLocalDataSourceImpl(
                     bigBlind = bigBlind,
                     ownerId = userId,
                     participantIds = listOf(userId),
+                    status = SessionStatus.ACTIVE,
                     createdAt = Clock.System.now().toEpochMilliseconds()
                 )
             }
@@ -64,6 +66,34 @@ class PokerLocalDataSourceImpl(
                     session.copy(
                         players = session.players + newPlayer,
                         participantIds = newParticipantIds
+                    )
+                } else session
+            }
+        }
+    }
+
+    override suspend fun updatePlayerName(sessionId: String, playerId: String, name: String) {
+        database.sessions.update { sessions ->
+            sessions.map { session ->
+                if (session.id == sessionId) {
+                    session.copy(
+                        players = session.players.map { player ->
+                            if (player.id == playerId) player.copy(name = name) else player
+                        }
+                    )
+                } else session
+            }
+        }
+    }
+
+    override suspend fun updatePlayerArchiveStatus(sessionId: String, playerId: String, isArchived: Boolean) {
+        database.sessions.update { sessions ->
+            sessions.map { session ->
+                if (session.id == sessionId) {
+                    session.copy(
+                        players = session.players.map { player ->
+                            if (player.id == playerId) player.copy(isArchived = isArchived) else player
+                        }
                     )
                 } else session
             }
@@ -121,6 +151,19 @@ class PokerLocalDataSourceImpl(
             sessions.map { session ->
                 if (session.id == sessionId) {
                     session.copy(title = title)
+                } else session
+            }
+        }
+    }
+
+    override suspend fun updateSessionStatus(sessionId: String, status: SessionStatus) {
+        database.sessions.update { sessions ->
+            sessions.map { session ->
+                if (session.id == sessionId) {
+                    session.copy(
+                        status = status,
+                        completedAt = if (status == SessionStatus.COMPLETED) Clock.System.now().toEpochMilliseconds() else session.completedAt
+                    )
                 } else session
             }
         }

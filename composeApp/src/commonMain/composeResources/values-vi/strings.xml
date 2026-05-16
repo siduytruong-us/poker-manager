@@ -52,4 +52,6 @@
     <string name="toggle_theme">Thay đổi giao diện ứng dụng</string>
     <string name="language">Ngôn ngữ</string>
     <string name="no_transactions">Chưa có lịch sử giao dịch</string>
+    <string name="complete_session">Kết thúc buổi chơi</string>
+    <string name="complete_session_confirmation">Bạn có chắc chắn muốn kết thúc buổi chơi này? Tất cả các giao dịch và tên người chơi sẽ bị khóa.</string>
 </resources>

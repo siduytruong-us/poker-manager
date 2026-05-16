@@ -3,6 +3,7 @@ package com.duyts.android.myapplication.data.remote
 import com.duyts.android.myapplication.core.Result
 import com.duyts.android.myapplication.data.local.PokerLocalDataSource
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.model.SessionStatus
 import com.duyts.android.myapplication.domain.model.TransactionType
 import com.duyts.android.myapplication.util.CurrencyUtils
 import com.duyts.android.myapplication.util.DateTimeUtils
@@ -109,6 +110,16 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 		}
 	}
 
+	override suspend fun updatePlayerName(sessionId: String, playerId: String, name: String) {
+		sessionsCollection.document(sessionId).collection("players").document(playerId)
+			.update("name" to name)
+	}
+
+	override suspend fun updatePlayerArchiveStatus(sessionId: String, playerId: String, isArchived: Boolean) {
+		sessionsCollection.document(sessionId).collection("players").document(playerId)
+			.update("isArchived" to isArchived)
+	}
+
 	override suspend fun buyIn(sessionId: String, playerId: String, amount: Float) {
 		val playerRef =
 			sessionsCollection.document(sessionId).collection("players").document(playerId)
@@ -144,6 +155,16 @@ class FirestorePokerDataSource : PokerRemoteDataSource {
 
 	override suspend fun updateSessionTitle(sessionId: String, title: String) {
 		sessionsCollection.document(sessionId).update("title" to title)
+	}
+
+	override suspend fun updateSessionStatus(sessionId: String, status: SessionStatus) {
+		val updates = mutableMapOf<String, Any>(
+			"status" to status.toFirestore()
+		)
+		if (status == SessionStatus.COMPLETED) {
+			updates["completedAt"] = Clock.System.now().toEpochMilliseconds()
+		}
+		sessionsCollection.document(sessionId).update(updates)
 	}
 
 	override suspend fun saveTransaction(

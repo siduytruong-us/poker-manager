@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.duyts.android.myapplication.domain.model.Player
 import com.duyts.android.myapplication.domain.model.PokerSession
+import com.duyts.android.myapplication.domain.model.SessionStatus
 import com.duyts.android.myapplication.presentation.theme.AppTheme
 import com.duyts.android.myapplication.presentation.viewmodel.PokerSessionListUiState
 import com.duyts.android.myapplication.util.CurrencyUtils
@@ -202,7 +203,27 @@ private fun SessionItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(session.title, style = MaterialTheme.typography.titleLarge)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(session.title, style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.width(8.dp))
+                    Surface(
+                        color = if (session.status == SessionStatus.ACTIVE)
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.surfaceVariant,
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Text(
+                            text = session.status.name,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            color = if (session.status == SessionStatus.ACTIVE)
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
                 Text(
                     text = stringResource(
                         Res.string.blinds_players_format,
@@ -237,6 +258,18 @@ fun PokerSessionListScreenPreview() {
                             players = listOf(
                                 Player(id = "user1", name = "Player 1", buyIn = 5f, cashOut = 7f),
                                 Player(id = "ply.2", name = "Player 2", buyIn = 5f, cashOut = 4f)
+                            )
+                        )
+                    ),
+                    "Yesterday" to listOf(
+                        PokerSession(
+                            id = "ses.2",
+                            title = "Saturday Night Poker",
+                            ownerId = "user1",
+                            status = SessionStatus.COMPLETED,
+                            players = listOf(
+                                Player(id = "user1", name = "Player 1", buyIn = 10f, cashOut = 15f),
+                                Player(id = "ply.3", name = "Player 3", buyIn = 10f, cashOut = 5f)
                             )
                         )
                     )

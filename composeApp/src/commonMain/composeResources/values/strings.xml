@@ -57,4 +57,7 @@
     <string name="join">Join</string>
     <string name="join_session">Join Session</string>
     <string name="no_transactions">No transactions yet</string>
+    <string name="complete_session">Complete Session</string>
+    <string name="complete_session_confirmation">Are you sure you want to complete this session? This will lock all transactions and player names.</string>
+    <string name="statistics">Statistics</string>
 </resources>

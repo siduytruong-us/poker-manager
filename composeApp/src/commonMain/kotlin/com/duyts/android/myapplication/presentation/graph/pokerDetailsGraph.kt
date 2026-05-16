@@ -36,7 +36,10 @@ fun NavGraphBuilder.pokerDetailsGraph(
                 onTransfer = { fromId, toId, amount ->
                     viewModel.transfer(fromId, toId, amount)
                 },
-                onUpdateTitle = { title -> viewModel.updateTitle(title) }
+                onUpdateTitle = { title -> viewModel.updateTitle(title) },
+                onUpdatePlayerName = { id, name -> viewModel.updatePlayerName(id, name) },
+                onUpdatePlayerArchiveStatus = { id, archived -> viewModel.updatePlayerArchiveStatus(id, archived) },
+                onCompleteSession = { viewModel.completeSession() }
             )
         }
     }

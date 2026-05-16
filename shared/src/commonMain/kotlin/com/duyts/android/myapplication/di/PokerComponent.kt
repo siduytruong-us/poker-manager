@@ -5,6 +5,7 @@ import com.duyts.android.myapplication.data.local.PokerLocalDataSourceImpl
 import com.duyts.android.myapplication.data.repository.PokerRepositoryImpl
 import com.duyts.android.myapplication.domain.repository.AuthRepository
 import com.duyts.android.myapplication.domain.repository.PokerRepository
+import com.duyts.android.myapplication.domain.usecase.GetPerformanceHistoryUseCase
 import com.duyts.android.myapplication.domain.usecase.GetSessionByIdUseCase
 import com.duyts.android.myapplication.presentation.viewmodel.EditProfileViewModel
 import com.duyts.android.myapplication.presentation.viewmodel.LoginViewModel
@@ -14,6 +15,7 @@ import com.duyts.android.myapplication.presentation.viewmodel.PokerSessionListVi
 import com.duyts.android.myapplication.presentation.viewmodel.ProfileViewModel
 import com.duyts.android.myapplication.presentation.viewmodel.SettingsViewModel
 import com.duyts.android.myapplication.presentation.viewmodel.SplashViewModel
+import com.duyts.android.myapplication.presentation.viewmodel.StatisticsViewModel
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.KmpComponentCreate
 import me.tatarka.inject.annotations.Provides
@@ -35,6 +37,8 @@ abstract class PokerComponent : PlatformComponent {
     abstract val pokerSessionListViewModel: PokerSessionListViewModel
 
     abstract val settingsViewModel: SettingsViewModel
+
+    abstract val statisticsViewModel: StatisticsViewModel
 
     abstract val splashViewModel: SplashViewModel
 

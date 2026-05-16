@@ -8,6 +8,11 @@ enum class TransactionType {
 }
 
 @Serializable
+enum class SessionStatus {
+    ACTIVE, COMPLETED
+}
+
+@Serializable
 data class Transaction(
     val id: String, // Format: trx.uuid
     val type: TransactionType,
@@ -23,7 +28,8 @@ data class Player(
     val name: String,
     val buyIn: Float = 0f,
     val cashOut: Float = 0f,
-    val adjustment: Float = 0f
+    val adjustment: Float = 0f,
+    val isArchived: Boolean = false
 ) {
     val netProfit: Float get() = cashOut - buyIn + adjustment
 }
@@ -38,8 +44,9 @@ data class PokerSession(
     val players: List<Player> = emptyList(),
     val participantIds: List<String> = emptyList(),
     val transactions: List<Transaction> = emptyList(),
-    val isFinished: Boolean = false,
-    val createdAt: Long = 0L
+    val status: SessionStatus = SessionStatus.ACTIVE,
+    val createdAt: Long = 0L,
+    val completedAt: Long? = null
 ) {
     val totalBuyIn: Float get() = players.sumOf { it.buyIn.toDouble() }.toFloat()
     val totalCashOut: Float get() = players.sumOf { it.cashOut.toDouble() }.toFloat()

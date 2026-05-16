@@ -3,6 +3,7 @@ package com.duyts.android.myapplication.presentation.ui.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,7 @@ import com.duyts.android.myapplication.presentation.ui.profile.EditProfileScreen
 import com.duyts.android.myapplication.presentation.ui.profile.ProfileScreen
 import com.duyts.android.myapplication.presentation.ui.sessionList.PokerSessionListScreen
 import com.duyts.android.myapplication.presentation.ui.settings.SettingsScreen
+import com.duyts.android.myapplication.presentation.ui.statistics.StatisticsScreen
 import com.duyts.android.myapplication.util.CurrencyUtils
 import myapplication.composeapp.generated.resources.Res
 import myapplication.composeapp.generated.resources.poker_sessions
@@ -64,6 +66,11 @@ fun MainScreen(
 			Route.PokerSessionList,
 			Icons.AutoMirrored.Filled.List,
 			stringResource(Res.string.poker_sessions)
+		),
+		BottomNavItem(
+			Route.Statistics,
+			Icons.Default.BarChart,
+			stringResource(Res.string.statistics)
 		),
 		BottomNavItem(Route.Profile, Icons.Default.Person, stringResource(Res.string.profile))
 	)
@@ -132,14 +139,25 @@ fun MainScreen(
 				)
 			}
 
+			composable<Route.Statistics> {
+				val viewModel = viewModel {
+					component.statisticsViewModel
+				}
+				val state by viewModel.uiState.collectAsState()
+
+				StatisticsScreen(
+					state = state
+				)
+			}
+
 			composable<Route.Profile> {
 				val viewModel = viewModel {
 					component.profileViewModel
 				}
-				val user by viewModel.user.collectAsState()
+				val state by viewModel.uiState.collectAsState()
 
 				ProfileScreen(
-					user = user,
+					state = state,
 					onEditProfile = {
 						navController.navigate(Route.EditProfile)
 					},

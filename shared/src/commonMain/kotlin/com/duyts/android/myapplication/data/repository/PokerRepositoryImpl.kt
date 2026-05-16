@@ -8,6 +8,7 @@ import com.duyts.android.myapplication.domain.model.PokerSession
 import com.duyts.android.myapplication.domain.model.TransactionType
 import com.duyts.android.myapplication.domain.repository.PokerRepository
 import com.duyts.android.myapplication.di.AppScope
+import com.duyts.android.myapplication.domain.model.SessionStatus
 import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
@@ -32,6 +33,14 @@ class PokerRepositoryImpl(
         dataSource.addPlayer(sessionId, id, name)
     }
 
+    override suspend fun updatePlayerName(sessionId: String, playerId: String, name: String) {
+        dataSource.updatePlayerName(sessionId, playerId, name)
+    }
+
+    override suspend fun updatePlayerArchiveStatus(sessionId: String, playerId: String, isArchived: Boolean) {
+        dataSource.updatePlayerArchiveStatus(sessionId, playerId, isArchived)
+    }
+
     override suspend fun buyIn(sessionId: String, playerId: String, amount: Float) {
         dataSource.buyIn(sessionId, playerId, amount)
         dataSource.saveTransaction(sessionId, TransactionType.BUY_IN, amount, playerId)
@@ -49,6 +58,10 @@ class PokerRepositoryImpl(
 
     override suspend fun updateSessionTitle(sessionId: String, title: String) {
         dataSource.updateSessionTitle(sessionId, title)
+    }
+
+    override suspend fun updateSessionStatus(sessionId: String, status: SessionStatus) {
+        dataSource.updateSessionStatus(sessionId, status)
     }
 
     override suspend fun deleteSession(sessionId: String) {
