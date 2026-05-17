@@ -1,5 +1,9 @@
 package com.duyts.android.myapplication.presentation.graph
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -21,7 +25,14 @@ fun NavGraphBuilder.mainGraph(
             navDeepLink {
                 uriPattern = "poker://join?sessionId={sessionId}"
             }
-        )
+        ),
+        enterTransition = { fadeIn() },
+        exitTransition = {
+            slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+        },
+        popEnterTransition = {
+            slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+        }
     ) { backStackEntry ->
         val route: Route.Main = backStackEntry.toRoute()
         MainScreen(

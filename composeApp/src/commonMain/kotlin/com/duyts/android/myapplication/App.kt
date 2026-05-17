@@ -1,14 +1,14 @@
 package com.duyts.android.myapplication
 
-import androidx.compose.runtime.*
-import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
-import coil3.network.NetworkHeaders
-import coil3.network.httpHeaders
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.util.DebugLogger
@@ -19,7 +19,6 @@ import com.duyts.android.myapplication.presentation.graph.mainGraph
 import com.duyts.android.myapplication.presentation.graph.pokerDetailsGraph
 import com.duyts.android.myapplication.presentation.navigation.Route
 import com.duyts.android.myapplication.presentation.theme.AppTheme
-import kotlinx.coroutines.delay
 
 @Composable
 fun App() {
@@ -42,7 +41,7 @@ fun App() {
         AppTheme(darkTheme = settingsState.isDarkMode) {
             NavHost(
                 navController = navController,
-                startDestination = Route.Splash,
+                startDestination = Route.Login,
             ) {
                 authGraph(navController = navController, component = component)
                 mainGraph(navController = navController, component = component)

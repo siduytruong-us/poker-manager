@@ -1,14 +1,28 @@
 package com.duyts.android.myapplication.presentation.ui.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -17,24 +31,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.duyts.android.myapplication.di.PokerComponent
-import com.duyts.android.myapplication.domain.model.PokerSession
+import androidx.navigation.toRoute
 import com.duyts.android.myapplication.core.Result
+import com.duyts.android.myapplication.di.PokerComponent
 import com.duyts.android.myapplication.presentation.navigation.Route
+import com.duyts.android.myapplication.presentation.ui.dashboard.DashboardScreen
 import com.duyts.android.myapplication.presentation.ui.profile.EditProfileScreen
 import com.duyts.android.myapplication.presentation.ui.profile.ProfileScreen
-import com.duyts.android.myapplication.presentation.ui.sessionList.PokerSessionListScreen
 import com.duyts.android.myapplication.presentation.ui.settings.SettingsScreen
 import com.duyts.android.myapplication.presentation.ui.statistics.StatisticsScreen
 import com.duyts.android.myapplication.util.CurrencyUtils
 import myapplication.composeapp.generated.resources.Res
-import myapplication.composeapp.generated.resources.poker_sessions
-import myapplication.composeapp.generated.resources.profile
-import myapplication.composeapp.generated.resources.settings
 import myapplication.composeapp.generated.resources.cancel
+import myapplication.composeapp.generated.resources.dashboard
 import myapplication.composeapp.generated.resources.join
 import myapplication.composeapp.generated.resources.join_session
+import myapplication.composeapp.generated.resources.profile
 import myapplication.composeapp.generated.resources.statistics
 import org.jetbrains.compose.resources.stringResource
 
@@ -64,12 +76,12 @@ fun MainScreen(
 
 	val items = listOf(
 		BottomNavItem(
-			Route.PokerSessionList,
-			Icons.AutoMirrored.Filled.List,
-			stringResource(Res.string.poker_sessions)
+			Route.Dashboard,
+			Icons.Default.Dashboard,
+			stringResource(Res.string.dashboard)
 		),
 		BottomNavItem(
-			Route.Statistics,
+			Route.Statistics(),
 			Icons.Default.BarChart,
 			stringResource(Res.string.statistics)
 		),
@@ -80,8 +92,11 @@ fun MainScreen(
 		bottomBar = {
 			NavigationBar {
 				items.forEach { item ->
-					val selected =
+					val selected = if (item.route is Route.Statistics) {
+						currentDestination?.hierarchy?.any { it.hasRoute(Route.Statistics::class) } == true
+					} else {
 						currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+					}
 					NavigationBarItem(
 						icon = { Icon(item.icon, contentDescription = item.label) },
 						label = { Text(item.label) },
@@ -103,16 +118,16 @@ fun MainScreen(
 	) { innerPadding ->
 		NavHost(
 			navController = navController,
-			startDestination = Route.PokerSessionList,
+			startDestination = Route.Dashboard,
 			modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding)
 		) {
-			composable<Route.PokerSessionList> {
+			composable<Route.Dashboard> {
 				val viewModel = viewModel {
 					component.pokerSessionListViewModel
 				}
 				val state by viewModel.uiState.collectAsState()
 
-				PokerSessionListScreen(
+				DashboardScreen(
 					state = state,
 					onSessionClick = onSessionClick,
 					onCreateSession = { title, sb, bb ->
@@ -120,6 +135,18 @@ fun MainScreen(
 					},
 					onDeleteSession = { id ->
 						viewModel.deleteSession(id)
+					},
+					onCompleteSession = { id ->
+						viewModel.completeSession(id)
+					},
+					onViewAllClick = {
+						navController.navigate(Route.Statistics(scrollToHistory = true)) {
+							popUpTo(navController.graph.findStartDestination().id) {
+								saveState = true
+							}
+							launchSingleTop = true
+							restoreState = true
+						}
 					}
 				)
 			}
@@ -140,14 +167,16 @@ fun MainScreen(
 				)
 			}
 
-			composable<Route.Statistics> {
+			composable<Route.Statistics> { backStackEntry ->
+				val route: Route.Statistics = backStackEntry.toRoute()
 				val viewModel = viewModel {
 					component.statisticsViewModel
 				}
 				val state by viewModel.uiState.collectAsState()
 
 				StatisticsScreen(
-					state = state
+					state = state,
+					scrollToHistory = route.scrollToHistory
 				)
 			}
 

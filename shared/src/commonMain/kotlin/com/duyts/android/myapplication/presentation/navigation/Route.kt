@@ -5,19 +5,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Route {
     @Serializable
-    data object Splash : Route()
-
-    @Serializable
     data object Login : Route()
 
     @Serializable
     data class Main(val sessionId: String? = null) : Route()
 
     @Serializable
-    data object PokerSessionList : Route()
+    data object Dashboard : Route()
 
     @Serializable
-    data object Statistics : Route()
+    data class Statistics(val scrollToHistory: Boolean = false) : Route()
 
     @Serializable
     data class PokerSessionDetail(val sessionId: String) : Route()

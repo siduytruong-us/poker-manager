@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Quản Lý Poker</string>
     <string name="poker_sessions">Danh Sách Poker</string>
+    <string name="dashboard">Tổng quan</string>
     <string name="create_session">Tạo Buổi Chơi</string>
     <string name="delete_session">Xóa Buổi Chơi</string>
     <string name="delete_session_confirmation">Bạn có chắc chắn muốn xóa buổi chơi này? Hành động này không thể hoàn tác.</string>

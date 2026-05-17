@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Rastreador de Poker</string>
     <string name="poker_sessions">Sesiones de Poker</string>
+    <string name="dashboard">Panel de control</string>
     <string name="create_session">Crear Sesión</string>
     <string name="delete_session">Eliminar Sesión</string>
     <string name="delete_session_confirmation">¿Estás seguro de que quieres eliminar esta sesión? Esta acción không se puede deshacer.</string>
