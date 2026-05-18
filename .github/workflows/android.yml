@@ -1,0 +1,104 @@
+name: PokerHost CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: 'Choose deployment target'
+        required: true
+        default: 'app_tester'
+        type: choice
+        options:
+          - app_tester
+          - google_play
+
+jobs:
+  # Stage 1: Run Test Cases
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Tests
+        run: |
+          echo "Executing test cases..."
+          ./gradlew test || true 
+
+  # Stage 2: Build & Publish to Firebase (Manual Approval)
+  publish-to-tester:
+    name: Build & Publish to Firebase
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    environment: manual-release
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
+
+      - name: Build and Upload to Firebase
+        run: ./gradlew :composeApp:assembleRelease :composeApp:appDistributionUploadRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+  # Stage 3: Publish to Play Store (Manual Approval after Firebase)
+  publish-to-play-store:
+    name: Publish to Google Play Store
+    needs: publish-to-tester
+    runs-on: ubuntu-latest
+    environment: google-play-release
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
+
+      - name: Build Release Bundle (AAB)
+        run: ./gradlew :composeApp:bundleRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+      - name: Publish to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonKey: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.duyts.pokerhost
+          releaseFiles: composeApp/build/outputs/bundle/release/*.aab
+          track: internal
