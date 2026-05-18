@@ -1,0 +1,41 @@
+package com.duyts.pokerhost.presentation.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.duyts.pokerhost.domain.repository.SessionPerformance
+import com.duyts.pokerhost.domain.usecase.GetPerformanceHistoryUseCase
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import me.tatarka.inject.annotations.Inject
+
+@Inject
+class StatisticsViewModel(
+	getPerformanceHistoryUseCase: GetPerformanceHistoryUseCase,
+) : ViewModel() {
+
+	val uiState: StateFlow<StatisticsUiState> = getPerformanceHistoryUseCase()
+		.map { history ->
+			StatisticsUiState(
+				performanceHistory = history,
+				totalProfit = history.sumOf { it.profit.toDouble() }.toFloat(),
+				totalBuyIn = history.sumOf { it.buyIn.toDouble() }.toFloat(),
+				totalCashOut = history.sumOf { it.cashOut.toDouble() }.toFloat(),
+				sessionsPlayed = history.size
+			)
+		}
+		.stateIn(
+			scope = viewModelScope,
+			started = SharingStarted.WhileSubscribed(5000),
+			initialValue = StatisticsUiState()
+		)
+}
+
+data class StatisticsUiState(
+	val performanceHistory: List<SessionPerformance> = emptyList(),
+	val totalProfit: Float = 0f,
+	val totalBuyIn: Float = 0f,
+	val totalCashOut: Float = 0f,
+	val sessionsPlayed: Int = 0,
+)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Poker Tracker</string>
+    <string name="app_name">Poker Host</string>
     <string name="poker_sessions">Poker Sessions</string>
     <string name="dashboard">Dashboard</string>
     <string name="create_session">Create Session</string>
@@ -42,7 +42,7 @@
     <string name="select_player">Select Player</string>
     <string name="add">Add</string>
     <string name="player_name">Player Name</string>
-    <string name="welcome_message">Welcome to Poker Tracker</string>
+    <string name="welcome_message">Welcome to Poker Host</string>
     <string name="welcome_description">Keep track of your wins and losses</string>
     <string name="sign_in_google">Sign in with Google</string>
     <string name="terms_conditions">By signing in, you agree to our Terms &amp; Conditions</string>
@@ -75,4 +75,12 @@
     <string name="live">LIVE</string>
     <string name="join_via_code">Join via Code</string>
     <string name="create_new_session">Create New Session</string>
+    <string name="onboarding_title_1">Manual Tracking is Messy</string>
+    <string name="onboarding_desc_1">Stop struggling with pens, paper, or complex spreadsheets. Manual record-keeping is slow and prone to errors during your home games.</string>
+    <string name="onboarding_title_2">Poker Host simplifies everything</string>
+    <string name="onboarding_desc_2">Easily manage buy-ins, cash-outs, and player transfers with a clean, digital interface. Focus on the game while we handle the math.</string>
+    <string name="onboarding_title_3">Analyze Your Performance</string>
+    <string name="onboarding_desc_3">Get instant insights into your ROI, total profits, and session history. See exactly how you and your friends performed.</string>
+    <string name="get_started">Get Started</string>
+    <string name="next">Next</string>
 </resources>

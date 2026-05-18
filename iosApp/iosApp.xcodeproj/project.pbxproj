@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B0B140F964A2039C7D57A7BF /* MyApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0B140F964A2039C7D57A7BF /*.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path =.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -65,7 +65,7 @@
 		18C4479997385CD8D84F09AF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0B140F964A2039C7D57A7BF /* MyApplication.app */,
+				B0B140F964A2039C7D57A7BF /*.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,7 +116,7 @@
 				BCE6CC4E2FB843C7003CF59F /* FirebaseFirestore */,
 			);
 			productName = iosApp;
-			productReference = B0B140F964A2039C7D57A7BF /* MyApplication.app */;
+			productReference = B0B140F964A2039C7D57A7BF /*.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

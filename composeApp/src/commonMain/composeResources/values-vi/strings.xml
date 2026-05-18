@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Quản Lý Poker</string>
+    <string name="app_name">Poker Host</string>
     <string name="poker_sessions">Danh Sách Poker</string>
     <string name="dashboard">Tổng quan</string>
     <string name="create_session">Tạo Buổi Chơi</string>
@@ -42,7 +42,7 @@
     <string name="select_player">Chọn Người Chơi</string>
     <string name="add">Thêm</string>
     <string name="player_name">Tên Người Chơi</string>
-    <string name="welcome_message">Chào mừng đến với Poker Tracker</string>
+    <string name="welcome_message">Chào mừng đến với Poker Host</string>
     <string name="welcome_description">Theo dõi thắng thua của bạn</string>
     <string name="sign_in_google">Đăng nhập với Google</string>
     <string name="terms_conditions">Bằng cách đăng nhập, bạn đồng ý với Điều khoản &amp; Điều kiện của chúng tôi</string>
@@ -61,4 +61,12 @@
     <string name="profit_over_time">Lợi nhuận theo thời gian</string>
     <string name="session_history">Lịch sử buổi chơi</string>
     <string name="no_completed_sessions">Chưa có buổi chơi nào hoàn thành</string>
+    <string name="onboarding_title_1">Quản lý thủ công rất rắc rối</string>
+    <string name="onboarding_desc_1">Đừng tốn thời gian với bút, giấy hay các bảng tính phức tạp. Việc ghi chép thủ công vừa chậm vừa dễ sai sót trong các ván bài tại nhà.</string>
+    <string name="onboarding_title_2">Poker Host đơn giản hóa mọi thứ</string>
+    <string name="onboarding_desc_2">Dễ dàng quản lý buy-in, cash-out và chuyển tiền giữa người chơi với giao diện kỹ thuật số gọn gàng. Hãy tập trung chơi bài, phần tính toán đã có chúng tôi lo.</string>
+    <string name="onboarding_title_3">Phân tích hiệu suất của bạn</string>
+    <string name="onboarding_desc_3">Nhận thông tin chi tiết ngay lập tức về ROI, tổng lợi nhuận và lịch sử phiên chơi. Xem chính xác bạn và bạn bè của mình đã chơi như thế nào.</string>
+    <string name="get_started">Bắt đầu</string>
+    <string name="next">Tiếp theo</string>
 </resources>

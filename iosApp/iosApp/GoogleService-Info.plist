@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.duyts.android.myapplication.MyApplication</string>
+    <string>com.duyts.pokerhost</string>
 	<key>PROJECT_ID</key>
 	<string>kidsapp-39001</string>
 	<key>STORAGE_BUCKET</key>

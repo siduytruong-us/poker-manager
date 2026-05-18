@@ -75,7 +75,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.duyts.android.myapplication.shared"
+    namespace = "com.duyts.pokerhost.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -12,7 +12,7 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
-            android:name="com.duyts.android.myapplication.MainActivity">
+            android:name="com.duyts.pokerhost.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

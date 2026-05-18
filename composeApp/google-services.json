@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "556290841007",
-    "project_id": "kidsapp-39001",
-    "storage_bucket": "kidsapp-39001.appspot.com"
+    "project_number": "1044534759993",
+    "project_id": "poker-host-550ca",
+    "storage_bucket": "poker-host-550ca.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:556290841007:android:5cbbf841fd2836ae44b75a",
+        "mobilesdk_app_id": "1:1044534759993:android:a6efebbf6bdcb05bd6f3e8",
         "android_client_info": {
-          "package_name": "com.duyts.poker.manager"
+          "package_name": "com.duyts.pokerhost"
         }
       },
       "oauth_client": [
         {
-          "client_id": "556290841007-cavvt4i37kkr7pqrej3ep6qr0rsoovpr.apps.googleusercontent.com",
+          "client_id": "1044534759993-ntrbl4cpp5por989q0c6541pltntok0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.duyts.pokerhost",
+            "certificate_hash": "7ddd5e3e4099219b53c203ac2d0ba9465d93cf78"
+          }
+        },
+        {
+          "client_id": "1044534759993-a8fs00o0te89paknaqjqc7ree61ue3j3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCLPNHgxhxVQf8sd1xJCw1Lt-kmWsXYZL4"
+          "current_key": "AIzaSyCResHd1C6sNcA70kbZDdFqj2axR0xmxHs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "556290841007-cavvt4i37kkr7pqrej3ep6qr0rsoovpr.apps.googleusercontent.com",
+              "client_id": "1044534759993-a8fs00o0te89paknaqjqc7ree61ue3j3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

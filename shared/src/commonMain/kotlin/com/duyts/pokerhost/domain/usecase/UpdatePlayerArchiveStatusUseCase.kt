@@ -1,0 +1,10 @@
+package com.duyts.pokerhost.domain.usecase
+
+import com.duyts.pokerhost.domain.repository.PokerRepository
+import me.tatarka.inject.annotations.Inject
+
+@Inject
+class UpdatePlayerArchiveStatusUseCase(private val repository: PokerRepository) {
+	suspend operator fun invoke(sessionId: String, playerId: String, isArchived: Boolean) =
+		repository.updatePlayerArchiveStatus(sessionId, playerId, isArchived)
+}

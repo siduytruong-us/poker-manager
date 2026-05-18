@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rastreador de Poker</string>
+    <string name="app_name">Poker Host</string>
     <string name="poker_sessions">Sesiones de Poker</string>
     <string name="dashboard">Panel de control</string>
     <string name="create_session">Crear Sesión</string>
@@ -42,7 +42,7 @@
     <string name="select_player">Seleccionar Jugador</string>
     <string name="add">Añadir</string>
     <string name="player_name">Nombre del Jugador</string>
-    <string name="welcome_message">Bienvenido al Rastreador de Poker</string>
+    <string name="welcome_message">Bienvenido a Poker Host</string>
     <string name="welcome_description">Mantén un registro de tus ganancias y pérdidas</string>
     <string name="sign_in_google">Iniciar sesión con Google</string>
     <string name="terms_conditions">Al iniciar sesión, aceptas nuestros Términos và Condiciones</string>
