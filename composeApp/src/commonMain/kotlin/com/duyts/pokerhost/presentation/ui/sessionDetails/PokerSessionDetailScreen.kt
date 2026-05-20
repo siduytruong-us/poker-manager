@@ -1,7 +1,6 @@
 package com.duyts.pokerhost.presentation.ui.sessionDetails
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,14 +22,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.AlertDialog
@@ -60,14 +60,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.duyts.pokerhost.domain.model.Player
-import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.model.SessionStatus
-import com.duyts.pokerhost.domain.model.Transaction
 import com.duyts.pokerhost.domain.model.TransactionType
+import com.duyts.pokerhost.fake.FakeData
 import com.duyts.pokerhost.presentation.theme.AppTheme
 import com.duyts.pokerhost.presentation.ui.components.alertDialog.AddPlayerDialog
 import com.duyts.pokerhost.presentation.ui.components.alertDialog.EditPlayerNameDialog
@@ -193,12 +191,12 @@ fun PokerSessionDetailScreen(
 						}
 					}
 					IconButton(
-						onClick = { showHistory = true },
+						onClick = { /* TODO: Implement Share functionality */ },
 						enabled = state is PokerSessionDetailUiState.Success
 					) {
 						Icon(
-							Icons.Default.History,
-							contentDescription = stringResource(Res.string.history)
+							Icons.Default.Share,
+							contentDescription = null
 						)
 					}
 				}
@@ -222,6 +220,25 @@ fun PokerSessionDetailScreen(
 							horizontalAlignment = Alignment.End,
 							verticalArrangement = Arrangement.spacedBy(16.dp)
 						) {
+							// History Action
+							SmallFloatingActionButton(
+								onClick = {
+									showHistory = true
+									showFabMenu = false
+								},
+								containerColor = MaterialTheme.colorScheme.secondaryContainer,
+								contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+							) {
+								Row(
+									modifier = Modifier.padding(horizontal = 12.dp),
+									verticalAlignment = Alignment.CenterVertically
+								) {
+									Icon(Icons.Default.History, contentDescription = null)
+									Spacer(Modifier.width(8.dp))
+									Text(stringResource(Res.string.history))
+								}
+							}
+
 							// Transfer Action
 							SmallFloatingActionButton(
 								onClick = {
@@ -262,17 +279,14 @@ fun PokerSessionDetailScreen(
 						}
 					}
 
-					val rotation by animateFloatAsState(if (showFabMenu) 45f else 0f)
-
 					FloatingActionButton(
 						onClick = { showFabMenu = !showFabMenu },
 						containerColor = MaterialTheme.colorScheme.primary,
 						contentColor = MaterialTheme.colorScheme.onPrimary
 					) {
 						Icon(
-							imageVector = Icons.Default.Add,
-							contentDescription = "Expand Menu",
-							modifier = Modifier.rotate(rotation)
+							imageVector = Icons.Default.Casino,
+							contentDescription = "Menu"
 						)
 					}
 				}
@@ -598,42 +612,10 @@ fun PokerSessionDetailScreen(
 @Preview
 @Composable
 fun PokerSessionDetailScreenPreview() {
-	val mockPlayers = listOf(
-		Player(id = "ply.1", name = "Duy", buyIn = 5f, cashOut = 7f),
-		Player(id = "ply.2", name = "John", buyIn = 5f, cashOut = 4f),
-		Player(id = "ply.3", name = "Alice", buyIn = 10f, cashOut = 12f)
-	)
-	val mockSession = PokerSession(
-		id = "ses.1",
-		title = "Friday Night Poker",
-		players = mockPlayers,
-		transactions = listOf(
-			Transaction(
-				id = "trx.1",
-				type = TransactionType.BUY_IN,
-				amount = 5f,
-				playerId = "ply.1"
-			),
-			Transaction(
-				id = "trx.2",
-				type = TransactionType.CASH_OUT,
-				amount = 7f,
-				playerId = "ply.1"
-			),
-			Transaction(
-				id = "trx.3",
-				type = TransactionType.TRANSFER,
-				amount = 1f,
-				playerId = "ply.2",
-				targetPlayerId = "ply.3"
-			)
-		)
-	)
-
 	AppTheme {
 		PokerSessionDetailScreen(
 			state = PokerSessionDetailUiState.Success(
-				session = mockSession
+				session = FakeData.detailSession
 			),
 			onBack = {},
 			onBuyIn = { _, _ -> },

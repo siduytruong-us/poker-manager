@@ -81,6 +81,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
+            implementation(libs.compose.uiTooling)
             implementation(libs.androidx.activity.compose)
             implementation(libs.play.services.auth)
             implementation(libs.ktor.client.okhttp)
@@ -173,5 +174,4 @@ android {
 }
 
 dependencies {
-    debugImplementation(libs.compose.uiTooling)
 }

@@ -83,4 +83,9 @@
     <string name="onboarding_desc_3">Get instant insights into your ROI, total profits, and session history. See exactly how you and your friends performed.</string>
     <string name="get_started">Get Started</string>
     <string name="next">Next</string>
+    <string name="roi_format">ROI %1$d%%</string>
+    <string name="busted">BUSTED</string>
+    <string name="break_even">BREAK EVEN</string>
+    <string name="adjust">Adjust</string>
+    <string name="buy_in_bullet_format"> • Buy-in: %1$s</string>
 </resources>

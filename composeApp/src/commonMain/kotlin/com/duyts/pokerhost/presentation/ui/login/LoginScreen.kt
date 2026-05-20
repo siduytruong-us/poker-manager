@@ -28,9 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.duyts.pokerhost.presentation.auth.rememberGoogleSignInLauncher
 import com.duyts.pokerhost.presentation.theme.AppTheme
+import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
 import com.duyts.pokerhost.presentation.viewmodel.LoginState
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
@@ -159,8 +161,10 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
-	AppTheme {
+fun LoginScreenPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
 		LoginScreen(
 			state = LoginState.Idle,
 			onLoginSuccess = {},

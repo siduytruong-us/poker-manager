@@ -1,7 +1,6 @@
 package com.duyts.pokerhost.presentation.ui.dashboard
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,15 +59,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.duyts.pokerhost.domain.model.Player
 import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.model.SessionStatus
+import com.duyts.pokerhost.fake.FakeData
 import com.duyts.pokerhost.presentation.theme.AppTheme
+import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
 import com.duyts.pokerhost.presentation.ui.components.profile.RecentSessionItem
 import com.duyts.pokerhost.presentation.viewmodel.PokerSessionListUiState
 import com.duyts.pokerhost.util.CurrencyUtils
@@ -97,7 +98,7 @@ import pokerhost.composeapp.generated.resources.small_blind
 import pokerhost.composeapp.generated.resources.stack
 import pokerhost.composeapp.generated.resources.view_all
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
 	state: PokerSessionListUiState,
@@ -608,62 +609,16 @@ private fun ActionCard(
 	}
 }
 
-@Preview(showSystemUi = true)
+@Preview
 @Composable
-fun DashboardScreenPreview() {
-	AppTheme(darkTheme = true) {
+private fun DashboardScreenPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
 		DashboardScreen(
 			state = PokerSessionListUiState.Success(
-				groupedSessions = mapOf(
-					"Today" to listOf(
-						PokerSession(
-							id = "ses.1",
-							title = "High Stakes Hold'em",
-							ownerId = "user1",
-							status = SessionStatus.ACTIVE,
-							players = listOf(
-								Player(
-									id = "user1",
-									name = "Player 1",
-									buyIn = 1000f,
-									cashOut = 0f
-								),
-								Player(id = "ply.2", name = "Player 2", buyIn = 3250f, cashOut = 0f)
-							)
-						)
-					),
-					"Yesterday" to listOf(
-						PokerSession(
-							id = "ses.2",
-							title = "Friday Night Cash",
-							ownerId = "user1",
-							status = SessionStatus.COMPLETED,
-							createdAt = 1715000000000L,
-							completedAt = 1715010000000L,
-							players = listOf(
-								Player(
-									id = "user1",
-									name = "Player 1",
-									buyIn = 200f,
-									cashOut = 650f
-								),
-								Player(id = "ply.3", name = "Player 3", buyIn = 100f, cashOut = 50f)
-							)
-						),
-						PokerSession(
-							id = "ses.3",
-							title = "Home Game Tournament",
-							ownerId = "user1",
-							status = SessionStatus.COMPLETED,
-							createdAt = 1714000000000L,
-							completedAt = 1714010000000L,
-							players = listOf(
-								Player(id = "user1", name = "Player 1", buyIn = 50f, cashOut = 0f)
-							)
-						)
-					)
-				),
-				currentUserId = "user1"
+				groupedSessions = FakeData.groupedSessions,
+				currentUserId = FakeData.playerId
 			),
 			onSessionClick = {},
 			onCreateSession = { _, _, _ -> },

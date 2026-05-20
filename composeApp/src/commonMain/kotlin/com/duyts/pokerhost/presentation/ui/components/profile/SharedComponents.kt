@@ -25,12 +25,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.repository.SessionPerformance
+import com.duyts.pokerhost.fake.FakeData
+import com.duyts.pokerhost.presentation.theme.AppTheme
+import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
 import com.duyts.pokerhost.util.CurrencyUtils
 import com.duyts.pokerhost.util.DateTimeUtils
+import org.jetbrains.compose.resources.stringResource
+import pokerhost.composeapp.generated.resources.Res
+import pokerhost.composeapp.generated.resources.adjust
+import pokerhost.composeapp.generated.resources.break_even
+import pokerhost.composeapp.generated.resources.busted
+import pokerhost.composeapp.generated.resources.buy_in
+import pokerhost.composeapp.generated.resources.buy_in_bullet_format
+import pokerhost.composeapp.generated.resources.cash_out
+import pokerhost.composeapp.generated.resources.roi_format
 
 @Composable
 fun RecentSessionItem(
@@ -79,9 +93,10 @@ fun RecentSessionItem(
 					fontWeight = FontWeight.Bold
 				)
 				Text(
-					text = "${DateTimeUtils.formatDate(session.completedAt ?: session.createdAt)} • Buy-in: ${
-						CurrencyUtils.format(
-							buyIn
+					text = "${DateTimeUtils.formatDate(session.completedAt ?: session.createdAt)}${
+						stringResource(
+							Res.string.buy_in_bullet_format,
+							CurrencyUtils.format(buyIn)
 						)
 					}",
 					style = MaterialTheme.typography.bodySmall,
@@ -97,11 +112,14 @@ fun RecentSessionItem(
 				)
 				Text(
 					text = if (profit > 0) {
-						"ROI ${((profit / buyIn.coerceAtLeast(1f)) * 100).toInt()}%"
+						stringResource(
+							Res.string.roi_format,
+							((profit / buyIn.coerceAtLeast(1f)) * 100).toInt()
+						)
 					} else if (profit < 0) {
-						"BUSTED"
+						stringResource(Res.string.busted)
 					} else {
-						"BREAK EVEN"
+						stringResource(Res.string.break_even)
 					},
 					style = MaterialTheme.typography.labelSmall,
 					color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -116,7 +134,7 @@ fun PerformanceItem(performance: SessionPerformance) {
 	Card(
 		modifier = Modifier.fillMaxWidth(),
 		colors = CardDefaults.cardColors(
-			containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+			containerColor = MaterialTheme.colorScheme.surface
 		),
 		shape = MaterialTheme.shapes.large,
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -172,11 +190,14 @@ fun PerformanceItem(performance: SessionPerformance) {
 				)
 				Text(
 					text = if (performance.profit > 0) {
-						"ROI ${((performance.profit / performance.buyIn.coerceAtLeast(1f)) * 100).toInt()}%"
+						stringResource(
+							Res.string.roi_format,
+							((performance.profit / performance.buyIn.coerceAtLeast(1f)) * 100).toInt()
+						)
 					} else if (performance.profit < 0) {
-						"BUSTED"
+						stringResource(Res.string.busted)
 					} else {
-						"BREAK EVEN"
+						stringResource(Res.string.break_even)
 					},
 					style = MaterialTheme.typography.labelSmall,
 					color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -193,9 +214,18 @@ fun PerformanceItem(performance: SessionPerformance) {
 				modifier = Modifier.fillMaxWidth(),
 				horizontalArrangement = Arrangement.SpaceBetween
 			) {
-				PerformanceDetailItem("Buy In", CurrencyUtils.format(performance.buyIn))
-				PerformanceDetailItem("Cash Out", CurrencyUtils.format(performance.cashOut))
-				PerformanceDetailItem("Adjust", CurrencyUtils.format(performance.adjustment))
+				PerformanceDetailItem(
+					stringResource(Res.string.buy_in),
+					CurrencyUtils.format(performance.buyIn)
+				)
+				PerformanceDetailItem(
+					stringResource(Res.string.cash_out),
+					CurrencyUtils.format(performance.cashOut)
+				)
+				PerformanceDetailItem(
+					stringResource(Res.string.adjust),
+					CurrencyUtils.format(performance.adjustment)
+				)
 			}
 		}
 	}
@@ -218,3 +248,54 @@ private fun PerformanceDetailItem(label: String, value: String) {
 	}
 }
 
+@Preview
+@Composable
+fun RecentSessionItemPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
+		Column(
+			modifier = Modifier.padding(16.dp),
+			verticalArrangement = Arrangement.spacedBy(16.dp)
+		) {
+			RecentSessionItem(
+				session = FakeData.session,
+				currentUserId = FakeData.playerId,
+				onClick = {}
+			)
+
+			RecentSessionItem(
+				session = FakeData.session.copy(
+					players = listOf(
+						FakeData.player.copy(cashOut = 50f)
+					)
+				),
+				currentUserId = FakeData.playerId,
+				onClick = {}
+			)
+		}
+	}
+}
+
+@Preview
+@Composable
+fun PerformanceItemPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
+		Column(
+			modifier = Modifier.padding(16.dp),
+			verticalArrangement = Arrangement.spacedBy(16.dp)
+		) {
+			PerformanceItem(performance = FakeData.performance)
+
+			PerformanceItem(
+				performance = FakeData.performance.copy(
+					profit = -150f,
+					cashOut = 350f,
+					sessionTitle = "Rough Session"
+				)
+			)
+		}
+	}
+}

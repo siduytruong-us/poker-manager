@@ -31,10 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.duyts.pokerhost.domain.repository.SessionPerformance
+import com.duyts.pokerhost.fake.FakeData
 import com.duyts.pokerhost.presentation.theme.AppTheme
+import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
 import com.duyts.pokerhost.presentation.ui.components.profile.PerformanceItem
 import com.duyts.pokerhost.presentation.ui.statistics.components.StatCard
 import com.duyts.pokerhost.presentation.viewmodel.StatisticsUiState
@@ -229,7 +232,7 @@ fun StatisticsScreen(
 }
 
 @Composable
-fun ProfitChart(
+private fun ProfitChart(
 	history: List<SessionPerformance>,
 	modifier: Modifier = Modifier,
 ) {
@@ -265,40 +268,13 @@ fun ProfitChart(
 
 @Preview(showSystemUi = true)
 @Composable
-fun StatisticsScreenPreview() {
-	val mockHistory = listOf(
-		SessionPerformance(
-			sessionId = "1",
-			sessionTitle = "Friday Night",
-			completedAt = 1715000000000L,
-			profit = 50f,
-			buyIn = 100f,
-			cashOut = 150f,
-			adjustment = 0f
-		),
-		SessionPerformance(
-			sessionId = "2",
-			sessionTitle = "Saturday Cash",
-			completedAt = 1715100000000L,
-			profit = -20f,
-			buyIn = 100f,
-			cashOut = 80f,
-			adjustment = 0f
-		),
-		SessionPerformance(
-			sessionId = "3",
-			sessionTitle = "Home Game",
-			completedAt = 1715200000000L,
-			profit = 100f,
-			buyIn = 200f,
-			cashOut = 300f,
-			adjustment = 0f
-		)
-	)
-	AppTheme(darkTheme = true) {
+fun StatisticsScreenPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
 		StatisticsScreen(
 			state = StatisticsUiState(
-				performanceHistory = mockHistory,
+				performanceHistory = FakeData.performances,
 				totalProfit = 130f,
 				totalBuyIn = 400f,
 				totalCashOut = 530f,

@@ -40,13 +40,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.duyts.pokerhost.domain.repository.AuthUser
+import com.duyts.pokerhost.fake.FakeData
 import com.duyts.pokerhost.presentation.theme.AppTheme
+import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
 import com.duyts.pokerhost.presentation.viewmodel.ProfileUiState
 import org.jetbrains.compose.resources.stringResource
 import pokerhost.composeapp.generated.resources.Res
@@ -248,16 +250,13 @@ private fun ProfileOptionItem(
 
 @Preview(showSystemUi = true)
 @Composable
-fun ProfileScreenPreview() {
-	AppTheme {
+fun ProfileScreenPreview(
+	@PreviewParameter(ThemePreviewProvider::class) darkTheme: Boolean,
+) {
+	AppTheme(darkTheme = darkTheme) {
 		ProfileScreen(
 			state = ProfileUiState(
-				user = AuthUser(
-					id = "user123",
-					email = "duy.truong@example.com",
-					displayName = "Duy Truong",
-					photoUrl = null
-				)
+				user = FakeData.user
 			),
 			onEditProfile = {},
 			onSettings = {},

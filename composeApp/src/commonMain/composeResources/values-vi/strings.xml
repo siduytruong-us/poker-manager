@@ -69,4 +69,9 @@
     <string name="onboarding_desc_3">Nhận thông tin chi tiết ngay lập tức về ROI, tổng lợi nhuận và lịch sử phiên chơi. Xem chính xác bạn và bạn bè của mình đã chơi như thế nào.</string>
     <string name="get_started">Bắt đầu</string>
     <string name="next">Tiếp theo</string>
+    <string name="roi_format">ROI %1$d%%</string>
+    <string name="busted">CHÁY TÚI</string>
+    <string name="break_even">HÒA VỐN</string>
+    <string name="adjust">Điều chỉnh</string>
+    <string name="buy_in_bullet_format"> • Buy-in: %1$s</string>
 </resources>
