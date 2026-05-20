@@ -59,7 +59,8 @@ fun NavGraphBuilder.pokerDetailsGraph(
 						archived
 					)
 				},
-				onCompleteSession = { viewModel.completeSession() }
+				onCompleteSession = { viewModel.completeSession() },
+				onShareSession = { title -> viewModel.shareSession(title) }
 			)
 		}
 	}

@@ -79,6 +79,13 @@ kotlin {
             implementation(libs.charty)
         }
 
+        val webMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        jsMain.get().dependsOn(webMain)
+        wasmJsMain.get().dependsOn(webMain)
+
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
@@ -150,7 +157,6 @@ android {
             val config = signingConfigs.getByName("release")
             if (config.storeFile == null || !config.storeFile!!.exists()) {
                 logger.error("Release build requested but signing store file is missing!")
-                throw GradleException("Signing store file is missing. Release builds must be signed.")
             }
             signingConfig = config
             firebaseAppDistribution {

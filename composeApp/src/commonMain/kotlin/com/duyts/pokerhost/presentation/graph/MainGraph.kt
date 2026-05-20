@@ -19,12 +19,7 @@ fun NavGraphBuilder.mainGraph(
 ) {
 	composable<Route.Main>(
 		deepLinks = listOf(
-			navDeepLink {
-				uriPattern = "poker://join/{sessionId}"
-			},
-			navDeepLink {
-				uriPattern = "poker://join?sessionId={sessionId}"
-			}
+			navDeepLink<Route.Main>(basePath = "pokerhost://join")
 		),
 		enterTransition = { fadeIn() },
 		exitTransition = {

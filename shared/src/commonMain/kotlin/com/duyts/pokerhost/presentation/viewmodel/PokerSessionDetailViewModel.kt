@@ -13,6 +13,7 @@ import com.duyts.pokerhost.domain.usecase.TransferBetweenPlayersUseCase
 import com.duyts.pokerhost.domain.usecase.UpdatePlayerArchiveStatusUseCase
 import com.duyts.pokerhost.domain.usecase.UpdatePlayerNameUseCase
 import com.duyts.pokerhost.domain.usecase.UpdateSessionTitleUseCase
+import com.duyts.pokerhost.util.ShareManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -33,6 +34,7 @@ class PokerSessionDetailViewModel(
 	private val updatePlayerNameUseCase: UpdatePlayerNameUseCase,
 	private val updatePlayerArchiveStatusUseCase: UpdatePlayerArchiveStatusUseCase,
 	private val completeSessionUseCase: CompleteSessionUseCase,
+	private val shareManager: ShareManager,
 	authRepository: AuthRepository,
 ) : ViewModel() {
 
@@ -103,6 +105,10 @@ class PokerSessionDetailViewModel(
 		viewModelScope.launch {
 			completeSessionUseCase(sessionId)
 		}
+	}
+
+	fun shareSession(title: String) {
+		shareManager.shareSession(sessionId, title)
 	}
 }
 

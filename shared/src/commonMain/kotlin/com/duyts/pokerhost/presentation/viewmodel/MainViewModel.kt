@@ -22,8 +22,11 @@ class MainViewModel(
 	private val _sessionToJoin = MutableStateFlow<PokerSession?>(null)
 	val sessionToJoin: StateFlow<PokerSession?> = _sessionToJoin.asStateFlow()
 
+	private var lastHandledSessionId: String? = null
+
 	fun handleDeepLink(sessionId: String?) {
-		if (sessionId.isNullOrBlank()) return
+		if (sessionId.isNullOrBlank() || sessionId == lastHandledSessionId) return
+		lastHandledSessionId = sessionId
 		viewModelScope.launch {
 			_sessionToJoin.value = getSessionByIdUseCase(sessionId).firstOrNull()
 		}

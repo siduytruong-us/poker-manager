@@ -74,6 +74,18 @@ fun MainScreen(
 		mainViewModel.handleDeepLink(sessionIdFromDeepLink)
 	}
 
+	LaunchedEffect(sessionToJoin) {
+		if (sessionToJoin != null) {
+			navController.navigate(Route.Dashboard) {
+				popUpTo(navController.graph.findStartDestination().id) {
+					saveState = true
+				}
+				launchSingleTop = true
+				restoreState = true
+			}
+		}
+	}
+
 	val items = listOf(
 		BottomNavItem(
 			Route.Dashboard,

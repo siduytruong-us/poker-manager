@@ -16,7 +16,16 @@
 				<string>com.googleusercontent.apps.556290841007-6ebutcjfplaomjjlqefplp1s34e99ms9</string>
 			</array>
 		</dict>
-		<dict/>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.duyts.pokerhost</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>pokerhost</string>
+            </array>
+        </dict>
 	</array>
 </dict>
 </plist>

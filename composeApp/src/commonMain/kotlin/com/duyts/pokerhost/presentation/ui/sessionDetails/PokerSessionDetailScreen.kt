@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
@@ -31,6 +30,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.AlertDialog
@@ -102,6 +102,7 @@ fun PokerSessionDetailScreen(
 	onUpdatePlayerName: (playerId: String, name: String) -> Unit,
 	onUpdatePlayerArchiveStatus: (playerId: String, isArchived: Boolean) -> Unit,
 	onCompleteSession: () -> Unit,
+	onShareSession: (title: String) -> Unit,
 ) {
 	var showAddPlayerDialog by remember { mutableStateOf(false) }
 	var showTransferDialog by remember { mutableStateOf(false) }
@@ -191,12 +192,15 @@ fun PokerSessionDetailScreen(
 						}
 					}
 					IconButton(
-						onClick = { /* TODO: Implement Share functionality */ },
+						onClick = {
+							val successState = state as? PokerSessionDetailUiState.Success
+							successState?.session?.title?.let { onShareSession(it) }
+						},
 						enabled = state is PokerSessionDetailUiState.Success
 					) {
 						Icon(
 							Icons.Default.Share,
-							contentDescription = null
+							contentDescription = "Share Session"
 						)
 					}
 				}
@@ -285,7 +289,7 @@ fun PokerSessionDetailScreen(
 						contentColor = MaterialTheme.colorScheme.onPrimary
 					) {
 						Icon(
-							imageVector = Icons.Default.Casino,
+							imageVector = Icons.Default.Style,
 							contentDescription = "Menu"
 						)
 					}
@@ -625,7 +629,8 @@ fun PokerSessionDetailScreenPreview() {
 			onUpdateTitle = {},
 			onUpdatePlayerName = { _, _ -> },
 			onUpdatePlayerArchiveStatus = { _, _ -> },
-			onCompleteSession = {}
+			onCompleteSession = {},
+			onShareSession = {}
 		)
 	}
 }

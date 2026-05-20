@@ -8,12 +8,18 @@ import com.duyts.pokerhost.data.repository.WasmAuthRepository
 import com.duyts.pokerhost.data.repository.WasmStorageRepository
 import com.duyts.pokerhost.domain.repository.AuthRepository
 import com.duyts.pokerhost.domain.repository.StorageRepository
+import com.duyts.pokerhost.util.ShareManager
+import com.duyts.pokerhost.util.WebShareManager
 import me.tatarka.inject.annotations.Provides
 
 actual interface PlatformComponent {
 	@Provides
 	@AppScope
 	fun provideAuthRepository(impl: WasmAuthRepository): AuthRepository = impl
+
+	@Provides
+	@AppScope
+	fun provideShareManager(impl: WebShareManager): ShareManager = impl
 
 	@Provides
 	@AppScope
