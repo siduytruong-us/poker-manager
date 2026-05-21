@@ -1,0 +1,15 @@
+Take the stress out of hosting poker night!
+
+PokerHost is the ultimate companion for home poker games. Stop using spreadsheets or messy notes; our app provides a professional, real-time tracking system for your private sessions.
+
+Key Features:
+* Live Session Tracking: Monitor every buy-in, add-on, and cash-out as they happen.
+* Real-Time Statistics: View player performance, total pot size, and game duration instantly.
+* Multi-Platform Access: Host on your phone and let players view the live session via a web link.
+* Player Management: Easily add players, archive those who leave early, and manage balances.
+* Transaction History: A transparent log of every financial move made during the game.
+* Currency Support: Formatted for easy reading of blinds and stacks.
+
+Whether you're running a casual "friendly" game or a serious deep-stack tournament, PokerHost ensures the numbers always add up. Focus on your bluffs, not the math!
+
+Download PokerHost today and level up your next game.

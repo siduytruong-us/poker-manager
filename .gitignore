@@ -18,3 +18,6 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
 .firebase/
+service-account.json
+*.jks
+*.json_key

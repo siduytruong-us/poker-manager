@@ -59,6 +59,14 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
 
+      - name: Log Version Info
+        run: |
+          VERSION_NAME=$(grep "versionName =" composeApp/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
+          echo -e "\e[32m##################################################\e[0m"
+          echo -e "\e[32mUPDATING VERSION CODE: ${{ github.run_number }}\e[0m"
+          echo -e "\e[32mUPDATING VERSION NAME: $VERSION_NAME\e[0m"
+          echo -e "\e[32m##################################################\e[0m"
+
       - name: Build and Upload to Firebase App Distribution
         run: ./gradlew :composeApp:assembleRelease :composeApp:appDistributionUploadRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks
         env:
@@ -115,6 +123,15 @@ jobs:
 
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
+
+      - name: Log Version Info
+        run: |
+          VERSION_NAME=$(grep "versionName =" composeApp/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
+          echo -e "\e[32m##################################################\e[0m"
+          echo -e "\e[32mPUBLISHING TO GOOGLE PLAY INTERNAL TESTING\e[0m"
+          echo -e "\e[32mVERSION CODE: ${{ github.run_number }}\e[0m"
+          echo -e "\e[32mVERSION NAME: $VERSION_NAME\e[0m"
+          echo -e "\e[32m##################################################\e[0m"
 
       - name: Build Release Bundle (AAB)
         run: ./gradlew :composeApp:bundleRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks

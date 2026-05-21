@@ -109,8 +109,8 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
 
-        // Auto-increment version code via CI property, default to 2 for local builds
-        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 2
+        // Auto-increment version code via CI property, default to 1 for local builds
+        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
         versionName = "1.1"
     }
 
