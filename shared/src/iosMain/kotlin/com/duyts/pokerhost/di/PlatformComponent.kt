@@ -5,8 +5,10 @@ import com.duyts.pokerhost.data.local.PokerLocalDataSource
 import com.duyts.pokerhost.data.local.PokerLocalDataSourceImpl
 import com.duyts.pokerhost.data.remote.FirestorePokerDataSource
 import com.duyts.pokerhost.data.remote.PokerRemoteDataSource
+import com.duyts.pokerhost.data.repository.AppConfigRepositoryImpl
 import com.duyts.pokerhost.data.repository.AuthRepositoryImpl
 import com.duyts.pokerhost.data.repository.FirebaseStorageRepository
+import com.duyts.pokerhost.domain.repository.AppConfigRepository
 import com.duyts.pokerhost.domain.repository.AuthRepository
 import com.duyts.pokerhost.domain.repository.StorageRepository
 import com.duyts.pokerhost.util.IosShareManager
@@ -17,6 +19,10 @@ actual interface PlatformComponent {
 	@Provides
 	@AppScope
 	fun provideAuthRepository(impl: AuthRepositoryImpl): AuthRepository = impl
+
+	@Provides
+	@AppScope
+	fun provideAppConfigRepository(impl: AppConfigRepositoryImpl): AppConfigRepository = impl
 
 	@Provides
 	@AppScope

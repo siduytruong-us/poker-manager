@@ -7,8 +7,8 @@ import com.duyts.pokerhost.util.IdGenerator
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
-import kotlinx.datetime.Clock
 import me.tatarka.inject.annotations.Inject
+import kotlin.time.Clock
 
 @Inject
 class SessionsFirestoreService {

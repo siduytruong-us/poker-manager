@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import com.duyts.pokerhost.di.PokerComponent
 import com.duyts.pokerhost.presentation.navigation.Route
 import com.duyts.pokerhost.presentation.ui.login.LoginScreen
+import com.duyts.pokerhost.presentation.ui.public.PublicInfoScreen
+import com.duyts.pokerhost.util.PublicContent
 
 fun NavGraphBuilder.authGraph(
 	navController: NavController,
@@ -34,7 +36,35 @@ fun NavGraphBuilder.authGraph(
 			},
 			onSignInSuccess = { idToken ->
 				viewModel.onGoogleSignInSuccess(idToken)
+			},
+			onNavigateToPrivacy = {
+				navController.navigate(Route.Privacy)
+			},
+			onNavigateToTerms = {
+				navController.navigate(Route.Terms)
 			}
+		)
+	}
+
+	composable<Route.Privacy>(
+		enterTransition = { fadeIn() },
+		exitTransition = { fadeOut() }
+	) {
+		PublicInfoScreen(
+			title = "Privacy Policy",
+			content = PublicContent.PRIVACY_POLICY,
+			onBack = { navController.popBackStack() }
+		)
+	}
+
+	composable<Route.Terms>(
+		enterTransition = { fadeIn() },
+		exitTransition = { fadeOut() }
+	) {
+		PublicInfoScreen(
+			title = "Terms & Conditions",
+			content = PublicContent.TERMS_CONDITIONS,
+			onBack = { navController.popBackStack() }
 		)
 	}
 }

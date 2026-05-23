@@ -91,6 +91,7 @@ kotlin {
             implementation(libs.compose.uiTooling)
             implementation(libs.androidx.activity.compose)
             implementation(libs.play.services.auth)
+            implementation(libs.googleAds)
             implementation(libs.ktor.client.okhttp)
         }
 

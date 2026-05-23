@@ -26,6 +26,7 @@ firebase-appdistribution = "5.2.1"
 coil = "3.4.0"
 ktor = "3.5.0"
 charty = "3.0.0-rc01"
+play-services-ads = "23.6.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -58,6 +59,7 @@ firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-
 firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "firebase-kotlin" }
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase-kotlin" }
 firebase-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase-kotlin" }
+firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kotlin" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version = "21.3.0" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -66,6 +68,7 @@ ktor_client_okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor_client_darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor_client_js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 charty = { module = "com.himanshoe:charty", version.ref = "charty" }
+googleAds = { module = "com.google.android.gms:play-services-ads", version.ref = "play-services-ads" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

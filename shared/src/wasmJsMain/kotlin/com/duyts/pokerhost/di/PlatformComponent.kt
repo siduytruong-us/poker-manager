@@ -4,8 +4,10 @@ import com.duyts.pokerhost.data.local.InMemoryDatabase
 import com.duyts.pokerhost.data.local.PokerLocalDataSource
 import com.duyts.pokerhost.data.local.PokerLocalDataSourceImpl
 import com.duyts.pokerhost.data.remote.PokerRemoteDataSource
+import com.duyts.pokerhost.data.repository.WasmAppConfigRepository
 import com.duyts.pokerhost.data.repository.WasmAuthRepository
 import com.duyts.pokerhost.data.repository.WasmStorageRepository
+import com.duyts.pokerhost.domain.repository.AppConfigRepository
 import com.duyts.pokerhost.domain.repository.AuthRepository
 import com.duyts.pokerhost.domain.repository.StorageRepository
 import com.duyts.pokerhost.util.ShareManager
@@ -16,6 +18,10 @@ actual interface PlatformComponent {
 	@Provides
 	@AppScope
 	fun provideAuthRepository(impl: WasmAuthRepository): AuthRepository = impl
+
+	@Provides
+	@AppScope
+	fun provideAppConfigRepository(impl: WasmAppConfigRepository): AppConfigRepository = impl
 
 	@Provides
 	@AppScope

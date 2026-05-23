@@ -1,6 +1,7 @@
 package com.duyts.pokerhost.presentation.ui.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,7 +41,6 @@ import org.jetbrains.compose.resources.stringResource
 import pokerhost.composeapp.generated.resources.Res
 import pokerhost.composeapp.generated.resources.img_login_background
 import pokerhost.composeapp.generated.resources.sign_in_google
-import pokerhost.composeapp.generated.resources.terms_conditions
 import pokerhost.composeapp.generated.resources.welcome_description
 import pokerhost.composeapp.generated.resources.welcome_message
 
@@ -49,6 +49,8 @@ fun LoginScreen(
 	state: LoginState,
 	onLoginSuccess: () -> Unit,
 	onSignInSuccess: (idToken: String) -> Unit,
+	onNavigateToPrivacy: () -> Unit,
+	onNavigateToTerms: () -> Unit,
 ) {
 	val snackbarHostState = remember { SnackbarHostState() }
 
@@ -148,11 +150,28 @@ fun LoginScreen(
 
 					Spacer(modifier = Modifier.height(16.dp))
 
-					Text(
-						text = stringResource(Res.string.terms_conditions),
-						style = MaterialTheme.typography.labelSmall,
-						color = Color.White.copy(alpha = 0.6f)
-					)
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+						horizontalArrangement = Arrangement.Center
+					) {
+						Text(
+							text = "Privacy Policy",
+							modifier = Modifier.clickable { onNavigateToPrivacy() },
+							style = MaterialTheme.typography.labelSmall,
+							color = Color.White.copy(alpha = 0.6f)
+						)
+						Text(
+							text = " • ",
+							style = MaterialTheme.typography.labelSmall,
+							color = Color.White.copy(alpha = 0.6f)
+						)
+						Text(
+							text = "Terms & Conditions",
+							modifier = Modifier.clickable { onNavigateToTerms() },
+							style = MaterialTheme.typography.labelSmall,
+							color = Color.White.copy(alpha = 0.6f)
+						)
+					}
 				}
 			}
 		}
@@ -168,7 +187,9 @@ fun LoginScreenPreview(
 		LoginScreen(
 			state = LoginState.Idle,
 			onLoginSuccess = {},
-			onSignInSuccess = {}
+			onSignInSuccess = {},
+			onNavigateToPrivacy = {},
+			onNavigateToTerms = {}
 		)
 	}
 }

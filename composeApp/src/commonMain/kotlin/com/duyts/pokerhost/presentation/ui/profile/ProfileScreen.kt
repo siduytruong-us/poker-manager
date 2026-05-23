@@ -18,7 +18,9 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -63,6 +65,8 @@ fun ProfileScreen(
 	onEditProfile: () -> Unit,
 	onSettings: () -> Unit,
 	onLogout: () -> Unit,
+	onPrivacy: () -> Unit,
+	onTerms: () -> Unit,
 ) {
 	val user = state.user
 	Scaffold { padding ->
@@ -176,6 +180,26 @@ fun ProfileScreen(
 							label = stringResource(Res.string.settings),
 							onClick = onSettings
 						)
+						HorizontalDivider(
+							modifier = Modifier.padding(horizontal = 16.dp),
+							thickness = 0.5.dp,
+							color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
+						)
+						ProfileOptionItem(
+							icon = Icons.Default.PrivacyTip,
+							label = "Privacy Policy",
+							onClick = onPrivacy
+						)
+						HorizontalDivider(
+							modifier = Modifier.padding(horizontal = 16.dp),
+							thickness = 0.5.dp,
+							color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
+						)
+						ProfileOptionItem(
+							icon = Icons.Default.TextSnippet,
+							label = "Terms & Conditions",
+							onClick = onTerms
+						)
 					}
 				}
 			}
@@ -260,7 +284,9 @@ fun ProfileScreenPreview(
 			),
 			onEditProfile = {},
 			onSettings = {},
-			onLogout = {}
+			onLogout = {},
+			onPrivacy = {},
+			onTerms = {}
 		)
 	}
 }

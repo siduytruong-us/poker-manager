@@ -10,6 +10,8 @@ class WasmPlatform : Platform {
 		return null
 	}
 
+	override fun getUrlPath(): String = getPath()
+
 	override fun openUrl(url: String) {
 		openBrowserUrl(url)
 	}
@@ -26,6 +28,10 @@ external fun getUserAgent(): String
 @OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 @JsFun("() => window.location.search")
 external fun getSearch(): String
+
+@OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+@JsFun("() => window.location.pathname")
+external fun getPath(): String
 
 @OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 @JsFun("(url) => window.location.href = url")

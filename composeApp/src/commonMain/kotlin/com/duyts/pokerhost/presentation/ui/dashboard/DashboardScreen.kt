@@ -70,6 +70,7 @@ import com.duyts.pokerhost.domain.model.SessionStatus
 import com.duyts.pokerhost.fake.FakeData
 import com.duyts.pokerhost.presentation.theme.AppTheme
 import com.duyts.pokerhost.presentation.theme.ThemePreviewProvider
+import com.duyts.pokerhost.presentation.ui.components.BannerAd
 import com.duyts.pokerhost.presentation.ui.components.profile.RecentSessionItem
 import com.duyts.pokerhost.presentation.viewmodel.PokerSessionListUiState
 import com.duyts.pokerhost.util.CurrencyUtils
@@ -158,6 +159,11 @@ fun DashboardScreen(
 					containerColor = MaterialTheme.colorScheme.background
 				)
 			)
+		},
+		bottomBar = {
+			val adId = (state as? PokerSessionListUiState.Success)?.appConfig?.androidBannerAdId
+				?: "ca-app-pub-3940256099942544/6300978111"
+			BannerAd(adId = adId)
 		}
 	) { padding ->
 		when (state) {

@@ -1,6 +1,7 @@
 package com.duyts.pokerhost.di
 
 import com.duyts.pokerhost.data.repository.PokerRepositoryImpl
+import com.duyts.pokerhost.domain.repository.AppConfigRepository
 import com.duyts.pokerhost.domain.repository.AuthRepository
 import com.duyts.pokerhost.domain.repository.PokerRepository
 import com.duyts.pokerhost.presentation.viewmodel.DashboardViewModel
@@ -23,6 +24,8 @@ abstract class PokerComponent : PlatformComponent {
 	@Provides
 	@AppScope
 	fun providePokerRepository(impl: PokerRepositoryImpl): PokerRepository = impl
+
+	abstract val appConfigRepository: AppConfigRepository
 
 	abstract val authRepository: AuthRepository
 

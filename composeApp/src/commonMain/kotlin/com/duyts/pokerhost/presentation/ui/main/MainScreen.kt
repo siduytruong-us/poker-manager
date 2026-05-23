@@ -219,6 +219,12 @@ fun MainScreen(
 						rootNavController.navigate(Route.Login) {
 							popUpTo(0) { inclusive = true }
 						}
+					},
+					onPrivacy = {
+						rootNavController.navigate(Route.Privacy)
+					},
+					onTerms = {
+						rootNavController.navigate(Route.Terms)
 					}
 				)
 			}

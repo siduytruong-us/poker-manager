@@ -36,4 +36,10 @@ sealed class Route {
 
 	@Serializable
 	data object EditProfile : Route()
+
+	@Serializable
+	data object Privacy : Route()
+
+	@Serializable
+	data object Terms : Route()
 }
