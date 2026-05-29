@@ -79,6 +79,18 @@ kotlin {
             implementation(libs.charty)
         }
 
+        val iosMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        val iosArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
         val webMain by creating {
             dependsOn(commonMain.get())
         }

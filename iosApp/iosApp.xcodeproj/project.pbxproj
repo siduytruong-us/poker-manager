@@ -13,6 +13,7 @@
 		BC196CE72FB4209A004CA0A1 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BC196CE62FB4209A004CA0A1 /* GoogleSignInSwift */; };
 		BCE6CC4D2FB843B1003CF59F /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = BCE6CC4C2FB843B1003CF59F /* FirebaseStorage */; };
 		BCE6CC4F2FB843C7003CF59F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BCE6CC4E2FB843C7003CF59F /* FirebaseFirestore */; };
+		BCE6CC512FB843D0003CF59F /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = BCE6CC502FB843D0003CF59F /* FirebaseRemoteConfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 				BCE6CC4D2FB843B1003CF59F /* FirebaseStorage in Frameworks */,
 				BC196CE72FB4209A004CA0A1 /* GoogleSignInSwift in Frameworks */,
 				BCE6CC4F2FB843C7003CF59F /* FirebaseFirestore in Frameworks */,
+				BCE6CC512FB843D0003CF59F /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +116,7 @@
 				BC196CE62FB4209A004CA0A1 /* GoogleSignInSwift */,
 				BCE6CC4C2FB843B1003CF59F /* FirebaseStorage */,
 				BCE6CC4E2FB843C7003CF59F /* FirebaseFirestore */,
+				BCE6CC502FB843D0003CF59F /* FirebaseRemoteConfig */,
 			);
 			productName = iosApp;
 			productReference = B0B140F964A2039C7D57A7BF /*.app */;
@@ -451,6 +454,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC196CB42FB41881004CA0A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		BCE6CC502FB843D0003CF59F /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC196CB42FB41881004CA0A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

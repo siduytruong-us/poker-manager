@@ -7,6 +7,7 @@ import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.model.SessionStatus
 import com.duyts.pokerhost.domain.model.Transaction
 import com.duyts.pokerhost.domain.model.TransactionType
+import com.duyts.pokerhost.util.ClockUtils
 import com.duyts.pokerhost.util.DateTimeUtils
 import com.duyts.pokerhost.util.IdGenerator
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Clock
 
 interface PokerLocalDataSource : PokerDataSource
 
@@ -51,7 +51,7 @@ class PokerLocalDataSourceImpl(
 					ownerId = userId,
 					participantIds = listOf(userId),
 					status = SessionStatus.ACTIVE,
-					createdAt = Clock.System.now().toEpochMilliseconds()
+					createdAt = ClockUtils.now().toEpochMilliseconds()
 				)
 			}
 			Result.Success(id)
@@ -178,7 +178,7 @@ class PokerLocalDataSourceImpl(
 				if (session.id == sessionId) {
 					session.copy(
 						status = status,
-						completedAt = if (status == SessionStatus.COMPLETED) Clock.System.now()
+						completedAt = if (status == SessionStatus.COMPLETED) ClockUtils.now()
 							.toEpochMilliseconds() else session.completedAt
 					)
 				} else session
@@ -202,7 +202,7 @@ class PokerLocalDataSourceImpl(
 						amount = amount,
 						playerId = playerId,
 						targetPlayerId = targetPlayerId,
-						timestamp = Clock.System.now().toEpochMilliseconds()
+						timestamp = ClockUtils.now().toEpochMilliseconds()
 					)
 					session.copy(transactions = session.transactions + newTransaction)
 				} else session

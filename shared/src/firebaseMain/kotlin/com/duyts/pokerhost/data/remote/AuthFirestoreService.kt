@@ -1,9 +1,9 @@
 package com.duyts.pokerhost.data.remote
 
+import com.duyts.pokerhost.util.ClockUtils
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Clock
 
 @Inject
 class AuthFirestoreService {
@@ -28,7 +28,7 @@ class AuthFirestoreService {
 				email = email,
 				displayName = displayName ?: "User ${userId.takeLast(4)}",
 				photoUrl = photoUrl,
-				createdAt = Clock.System.now().toEpochMilliseconds()
+				createdAt = ClockUtils.now().toEpochMilliseconds()
 			)
 			userRef.set(FirestoreUser.serializer(), firestoreUser)
 		}

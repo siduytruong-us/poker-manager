@@ -1,6 +1,7 @@
 package com.duyts.pokerhost.data.remote
 
 import com.duyts.pokerhost.domain.model.TransactionType
+import com.duyts.pokerhost.util.ClockUtils
 import com.duyts.pokerhost.util.CurrencyUtils
 import com.duyts.pokerhost.util.DateTimeUtils
 import com.duyts.pokerhost.util.IdGenerator
@@ -8,7 +9,6 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Clock
 
 @Inject
 class SessionsFirestoreService {
@@ -37,7 +37,7 @@ class SessionsFirestoreService {
 			bigBlind = CurrencyUtils.dollarsToCents(bigBlind),
 			ownerId = userId,
 			participantIds = listOf(userId),
-			createdAt = Clock.System.now().toEpochMilliseconds()
+			createdAt = ClockUtils.now().toEpochMilliseconds()
 		)
 		docRef.set(FirestoreSession.serializer(), session)
 		return docRef.id
@@ -54,14 +54,14 @@ class SessionsFirestoreService {
 		firestore.batch().apply {
 			set(playerRef, FirestorePlayer.serializer(), player)
 			if (!id.startsWith("ply.")) {
-				update(sessionRef, "participantIds" to FieldValue.arrayUnion(id))
+				updateFields(sessionRef) { "participantIds" to FieldValue.arrayUnion(id) }
 			}
 		}.commit()
 	}
 
 	suspend fun updatePlayerName(sessionId: String, playerId: String, name: String) {
 		sessionsCollection.document(sessionId).collection("players").document(playerId)
-			.update("name" to name)
+			.updateFields { "name" to name }
 	}
 
 	suspend fun updatePlayerArchiveStatus(
@@ -70,7 +70,7 @@ class SessionsFirestoreService {
 		isArchived: Boolean,
 	) {
 		sessionsCollection.document(sessionId).collection("players").document(playerId)
-			.update("isArchived" to isArchived)
+			.updateFields { "isArchived" to isArchived }
 	}
 
 	suspend fun getPlayer(sessionId: String, playerId: String) =
@@ -130,7 +130,7 @@ class SessionsFirestoreService {
 			amount = CurrencyUtils.dollarsToCents(amount),
 			playerId = playerId,
 			targetPlayerId = targetPlayerId,
-			timestamp = Clock.System.now().toEpochMilliseconds()
+			timestamp = ClockUtils.now().toEpochMilliseconds()
 		)
 		txRef.set(FirestoreTransaction.serializer(), transaction)
 	}

@@ -7,12 +7,13 @@ struct ComposeView: UIViewControllerRepresentable {
         let controller = MainViewControllerKt.MainViewController()
 
         // This bridges the Kotlin delegate to the native iOS Google Sign In SDK
-        GoogleSignInProvider.shared.delegate = { onSuccess, onError in
+        GoogleSignInProvider.shared.delegate = { onTokenReceived, onError in
             GIDSignIn.sharedInstance.signIn(withPresenting: controller) { result, error in
                 if let error = error {
                     onError(error.localizedDescription)
                 } else if let idToken = result?.user.idToken?.tokenString {
-                    onSuccess(idToken)
+                    let accessToken = result?.user.accessToken.tokenString
+                    onTokenReceived(idToken, accessToken)
                 } else {
                     onError("Failed to get ID Token")
                 }

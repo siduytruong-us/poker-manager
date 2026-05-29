@@ -34,8 +34,8 @@ fun NavGraphBuilder.authGraph(
 					popUpTo(Route.Login) { inclusive = true }
 				}
 			},
-			onSignInSuccess = { idToken ->
-				viewModel.onGoogleSignInSuccess(idToken)
+			onSignInSuccess = { idToken, accessToken ->
+				viewModel.onGoogleSignInSuccess(idToken, accessToken)
 			},
 			onNavigateToPrivacy = {
 				navController.navigate(Route.Privacy)

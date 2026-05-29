@@ -11,7 +11,7 @@ import com.google.android.gms.common.api.ApiException
 
 @Composable
 actual fun rememberGoogleSignInLauncher(
-	onIdTokenReceived: (String) -> Unit,
+	onTokenReceived: (idToken: String, accessToken: String?) -> Unit,
 	onError: (String) -> Unit,
 ): GoogleSignInLauncher {
 	val context = LocalContext.current
@@ -31,7 +31,7 @@ actual fun rememberGoogleSignInLauncher(
 		val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 		try {
 			val account = task.getResult(ApiException::class.java)
-			account.idToken?.let { onIdTokenReceived(it) } ?: onError("ID Token is null")
+			account.idToken?.let { onTokenReceived(it, null) } ?: onError("ID Token is null")
 		} catch (e: ApiException) {
 			onError(e.message ?: "Sign in failed")
 		}

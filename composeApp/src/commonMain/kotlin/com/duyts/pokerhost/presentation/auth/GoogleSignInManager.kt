@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 expect fun rememberGoogleSignInLauncher(
-	onIdTokenReceived: (String) -> Unit,
+	onTokenReceived: (idToken: String, accessToken: String?) -> Unit,
 	onError: (String) -> Unit,
 ): GoogleSignInLauncher
 

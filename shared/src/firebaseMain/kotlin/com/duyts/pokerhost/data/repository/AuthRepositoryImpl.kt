@@ -44,8 +44,10 @@ class AuthRepositoryImpl(
 			}
 		}
 
-	override suspend fun signInWithGoogle(idToken: String): Result<Unit> = runCatching {
-		val authResult = auth.signInWithCredential(GoogleAuthProvider.credential(idToken, null))
+	override suspend fun signInWithGoogle(idToken: String, accessToken: String?): Result<Unit> =
+		runCatching {
+			val authResult =
+				auth.signInWithCredential(GoogleAuthProvider.credential(idToken, accessToken))
 		val user = authResult.user
 		if (user != null) {
 			firestoreService.createUser(

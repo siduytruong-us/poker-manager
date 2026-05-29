@@ -48,15 +48,15 @@ import pokerhost.composeapp.generated.resources.welcome_message
 fun LoginScreen(
 	state: LoginState,
 	onLoginSuccess: () -> Unit,
-	onSignInSuccess: (idToken: String) -> Unit,
+	onSignInSuccess: (idToken: String, accessToken: String?) -> Unit,
 	onNavigateToPrivacy: () -> Unit,
 	onNavigateToTerms: () -> Unit,
 ) {
 	val snackbarHostState = remember { SnackbarHostState() }
 
 	val googleSignInLauncher = rememberGoogleSignInLauncher(
-		onIdTokenReceived = { idToken ->
-			onSignInSuccess(idToken)
+		onTokenReceived = { idToken, accessToken ->
+			onSignInSuccess(idToken, accessToken)
 		},
 		onError = { error ->
 			print(error)
@@ -187,7 +187,7 @@ fun LoginScreenPreview(
 		LoginScreen(
 			state = LoginState.Idle,
 			onLoginSuccess = {},
-			onSignInSuccess = {},
+			onSignInSuccess = { _, _ -> },
 			onNavigateToPrivacy = {},
 			onNavigateToTerms = {}
 		)

@@ -4,6 +4,7 @@ import com.duyts.pokerhost.core.Result
 import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.model.SessionStatus
 import com.duyts.pokerhost.domain.model.TransactionType
+import com.duyts.pokerhost.util.ClockUtils
 import com.duyts.pokerhost.util.CurrencyUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Clock
 
 @Inject
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -142,7 +142,7 @@ class FirestorePokerDataSource(
 			"status" to status.toFirestore()
 		)
 		if (status == SessionStatus.COMPLETED) {
-			updates["completedAt"] = Clock.System.now().toEpochMilliseconds()
+			updates["completedAt"] = ClockUtils.now().toEpochMilliseconds()
 		}
 		firestoreService.updateSession(sessionId, updates)
 	}

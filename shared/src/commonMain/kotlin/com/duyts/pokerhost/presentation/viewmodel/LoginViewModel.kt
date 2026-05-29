@@ -31,10 +31,10 @@ class LoginViewModel(
 		}
 	}
 
-	fun onGoogleSignInSuccess(idToken: String) {
+	fun onGoogleSignInSuccess(idToken: String, accessToken: String? = null) {
 		viewModelScope.launch {
 			_loginState.value = LoginState.Loading
-			authRepository.signInWithGoogle(idToken)
+			authRepository.signInWithGoogle(idToken, accessToken)
 				.onSuccess {
 					_loginState.value = LoginState.Success
 				}
