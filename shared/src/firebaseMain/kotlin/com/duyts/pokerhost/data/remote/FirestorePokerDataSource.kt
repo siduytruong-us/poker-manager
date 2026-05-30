@@ -8,6 +8,7 @@ import com.duyts.pokerhost.util.ClockUtils
 import com.duyts.pokerhost.util.CurrencyUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -43,6 +44,7 @@ class FirestorePokerDataSource(
 				}
 				combine(sessionFlows) { it.toList() }
 			}
+			.catch { emit(emptyList()) }
 	}
 
 	override fun getSessionById(sessionId: String): Flow<PokerSession?> {
@@ -65,6 +67,7 @@ class FirestorePokerDataSource(
 					fsSession.toDomain(players, transactions)
 				}
 			}
+			.catch { emit(null) }
 	}
 
 	override suspend fun createSession(
@@ -119,17 +122,11 @@ class FirestorePokerDataSource(
 		toPlayerId: String,
 		amount: Float,
 	) {
-		val centAmount = CurrencyUtils.dollarsToCents(amount)
-
-		firestoreService.updatePlayerBalance(
+		firestoreService.transferBetweenPlayersAtomic(
 			sessionId = sessionId,
-			playerId = fromPlayerId,
-			adjustmentDelta = -centAmount
-		)
-		firestoreService.updatePlayerBalance(
-			sessionId = sessionId,
-			playerId = toPlayerId,
-			adjustmentDelta = centAmount
+			fromPlayerId = fromPlayerId,
+			toPlayerId = toPlayerId,
+			centAmount = CurrencyUtils.dollarsToCents(amount)
 		)
 	}
 

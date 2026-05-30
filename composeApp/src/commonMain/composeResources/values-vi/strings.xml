@@ -74,4 +74,7 @@
     <string name="break_even">HÒA VỐN</string>
     <string name="adjust">Điều chỉnh</string>
     <string name="buy_in_bullet_format"> • Buy-in: %1$s</string>
+    <string name="win_rate">Tỷ lệ thắng</string>
+    <string name="session_code">Mã buổi chơi</string>
+    <string name="enter_session_code">Nhập mã buổi chơi</string>
 </resources>

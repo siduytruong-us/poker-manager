@@ -53,7 +53,7 @@ class WasmAuthRepository : AuthRepository {
 		}
 	}
 
-	override suspend fun signInWithGoogle(idToken: String): Result<Unit> =
+	override suspend fun signInWithGoogle(idToken: String, accessToken: String?): Result<Unit> =
 		suspendCancellableCoroutine { continuation ->
 			firebaseSignInWithGoogle(idToken, {
 				continuation.resume(Result.success(Unit))

@@ -2,6 +2,7 @@ package com.duyts.pokerhost.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duyts.pokerhost.core.Result
 import com.duyts.pokerhost.domain.model.PokerSession
 import com.duyts.pokerhost.domain.repository.AuthRepository
 import com.duyts.pokerhost.domain.usecase.AddPlayerUseCase
@@ -14,8 +15,10 @@ import com.duyts.pokerhost.domain.usecase.UpdatePlayerArchiveStatusUseCase
 import com.duyts.pokerhost.domain.usecase.UpdatePlayerNameUseCase
 import com.duyts.pokerhost.domain.usecase.UpdateSessionTitleUseCase
 import com.duyts.pokerhost.util.ShareManager
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,8 +41,8 @@ class PokerSessionDetailViewModel(
 	authRepository: AuthRepository,
 ) : ViewModel() {
 
-	val currentUser = authRepository.currentUser
-		.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+	private val _error = MutableStateFlow<String?>(null)
+	val error: StateFlow<String?> = _error.asStateFlow()
 
 	val uiState: StateFlow<PokerSessionDetailUiState> = combine(
 		getSessionByIdUseCase(sessionId),
@@ -61,50 +64,60 @@ class PokerSessionDetailViewModel(
 
 	fun addPlayer(name: String) {
 		viewModelScope.launch {
-			addPlayerUseCase(sessionId, name)
+			addPlayerUseCase(sessionId, name).onError { _error.value = it }
 		}
 	}
 
 	fun buyIn(playerId: String, amount: Float) {
 		viewModelScope.launch {
-			buyInUseCase(sessionId, playerId, amount)
+			buyInUseCase(sessionId, playerId, amount).onError { _error.value = it }
 		}
 	}
 
 	fun cashOut(playerId: String, amount: Float) {
 		viewModelScope.launch {
-			cashOutUseCase(sessionId, playerId, amount)
+			cashOutUseCase(sessionId, playerId, amount).onError { _error.value = it }
 		}
 	}
 
 	fun transfer(fromPlayerId: String, toPlayerId: String, amount: Float) {
 		viewModelScope.launch {
 			transferBetweenPlayersUseCase(sessionId, fromPlayerId, toPlayerId, amount)
+				.onError { _error.value = it }
 		}
 	}
 
 	fun updateTitle(title: String) {
 		viewModelScope.launch {
-			updateSessionTitleUseCase(sessionId, title)
+			updateSessionTitleUseCase(sessionId, title).onError { _error.value = it }
 		}
 	}
 
 	fun updatePlayerName(playerId: String, name: String) {
 		viewModelScope.launch {
-			updatePlayerNameUseCase(sessionId, playerId, name)
+			updatePlayerNameUseCase(sessionId, playerId, name).onError { _error.value = it }
 		}
 	}
 
 	fun updatePlayerArchiveStatus(playerId: String, isArchived: Boolean) {
 		viewModelScope.launch {
 			updatePlayerArchiveStatusUseCase(sessionId, playerId, isArchived)
+				.onError { _error.value = it }
 		}
 	}
 
 	fun completeSession() {
 		viewModelScope.launch {
-			completeSessionUseCase(sessionId)
+			completeSessionUseCase(sessionId).onError { _error.value = it }
 		}
+	}
+
+	fun clearError() {
+		_error.value = null
+	}
+
+	private fun Result<Unit>.onError(block: (String) -> Unit) {
+		if (this is Result.Error) block(message ?: exception?.message ?: "Unknown error")
 	}
 
 	fun shareSession(title: String) {

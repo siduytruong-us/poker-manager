@@ -9,10 +9,10 @@ external fun googleSignIn(clientId: String, callback: (String) -> Unit)
 
 @Composable
 actual fun rememberGoogleSignInLauncher(
-	onIdTokenReceived: (String) -> Unit,
+	onTokenReceived: (idToken: String, accessToken: String?) -> Unit,
 	onError: (String) -> Unit,
 ): GoogleSignInLauncher {
-	val clientId = "556290841007-ehbtbldvi00l84kpq0hb29j2gd49nlkf.apps.googleusercontent.com"
+	val clientId = WEB_GOOGLE_CLIENT_ID
 
 	return remember {
 		object : GoogleSignInLauncher {
@@ -20,7 +20,7 @@ actual fun rememberGoogleSignInLauncher(
 				try {
 					googleSignIn(clientId) { credential ->
 						if (credential.isNotEmpty()) {
-							onIdTokenReceived(credential)
+							onTokenReceived(credential, null)
 						} else {
 							onError("No credential received from Google")
 						}

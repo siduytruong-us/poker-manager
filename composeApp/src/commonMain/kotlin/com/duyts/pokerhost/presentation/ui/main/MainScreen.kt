@@ -159,6 +159,13 @@ fun MainScreen(
 					onCompleteSession = { id ->
 						viewModel.completeSession(id)
 					},
+					onJoinSession = { sessionId ->
+						mainViewModel.joinSession(sessionId) { result ->
+							if (result is Result.Success) {
+								onSessionClick(sessionId)
+							}
+						}
+					},
 					onViewAllClick = {
 						navController.navigate(Route.Statistics(scrollToHistory = true)) {
 							popUpTo(navController.graph.findStartDestination().id) {

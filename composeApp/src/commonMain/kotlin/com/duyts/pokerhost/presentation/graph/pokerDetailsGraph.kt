@@ -3,8 +3,11 @@ package com.duyts.pokerhost.presentation.graph
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -41,9 +44,19 @@ fun NavGraphBuilder.pokerDetailsGraph(
 				component.pokerSessionDetailViewModelFactory(route.sessionId)
 			}
 			val state by viewModel.uiState.collectAsState()
+			val error by viewModel.error.collectAsState()
+			val snackbarHostState = remember { SnackbarHostState() }
+
+			LaunchedEffect(error) {
+				error?.let {
+					snackbarHostState.showSnackbar(it)
+					viewModel.clearError()
+				}
+			}
 
 			PokerSessionDetailScreen(
 				state = state,
+				snackbarHostState = snackbarHostState,
 				onBack = { navController.popBackStack() },
 				onBuyIn = { playerId, amount -> viewModel.buyIn(playerId, amount) },
 				onCashOut = { playerId, amount -> viewModel.cashOut(playerId, amount) },

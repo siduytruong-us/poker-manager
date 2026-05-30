@@ -16,81 +16,80 @@ on:
           - app_tester
           - google_play
 
+# Fix 7: Bump VERSION_CODE_BASE if repo is ever migrated to preserve Play Store
+# version code continuity (Play Store requires strictly increasing version codes)
+env:
+  VERSION_CODE_BASE: 0
+
 jobs:
-  # Stage 1: Run Test Cases
+  # ─── Stage 1: Tests ────────────────────────────────────────────────────────
   test:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # Fix 3+4: composite action handles JDK + Gradle/Konan cache + chmod
+      - uses: ./.github/actions/setup-kmp
 
       - name: Run Tests
-        run: |
-          echo "Executing test cases..."
-          ./gradlew test || true
+        run: ./gradlew test
 
-  # Stage 2 (Concurrent A): Publish to Firebase App Tester (Android)
+  # ─── Stage 2A: Android → Firebase App Distribution ────────────────────────
   publish-android-to-tester:
     name: Build & Publish Android
     needs: [ test ]
     runs-on: ubuntu-latest
     environment: manual-release
+    # Fix 2: skip on pull_request — only deploy on push to main or workflow_dispatch
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
+      - uses: ./.github/actions/setup-kmp
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # Fix 7: compute version code with offset so migrating repo doesn't reset to 1
+      - name: Compute Version Code
+        id: version
+        run: echo "code=$(( ${{ github.run_number }} + ${{ env.VERSION_CODE_BASE }} ))" >> $GITHUB_OUTPUT
 
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
 
+      # Fix 6: decode service account JSON, use GOOGLE_APPLICATION_CREDENTIALS
+      # instead of deprecated FIREBASE_TOKEN
+      - name: Decode Firebase Service Account
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_POKER_HOST_550CA }}' > firebase-service-account.json
+
       - name: Log Version Info
         run: |
           VERSION_NAME=$(grep "versionName =" composeApp/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
-          echo -e "\e[32m##################################################\e[0m"
-          echo -e "\e[32mUPDATING VERSION CODE: ${{ github.run_number }}\e[0m"
-          echo -e "\e[32mUPDATING VERSION NAME: $VERSION_NAME\e[0m"
-          echo -e "\e[32m##################################################\e[0m"
+          echo "::notice::VERSION CODE: ${{ steps.version.outputs.code }} | VERSION NAME: $VERSION_NAME"
 
       - name: Build and Upload to Firebase App Distribution
-        run: ./gradlew :composeApp:assembleRelease :composeApp:appDistributionUploadRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks
+        run: |
+          ./gradlew :composeApp:assembleRelease \
+                    :composeApp:appDistributionUploadRelease \
+                    -PVERSION_CODE=${{ steps.version.outputs.code }} \
+                    -PSIGNING_STORE_FILE=release.jks
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          # Fix 6: service account replaces deprecated FIREBASE_TOKEN
+          GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
-  # Stage 2 (Concurrent B): Deploy to Firebase Hosting (Web)
+  # ─── Stage 2B: Web → Firebase Hosting ─────────────────────────────────────
   deploy-web:
     name: Build & Deploy Web
     needs: [ test ]
     runs-on: ubuntu-latest
+    # Fix 5: require approval before deploying to production web
+    environment: web-deploy
+    # Fix 2: skip on pull_request
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - uses: ./.github/actions/setup-kmp
 
       - name: Build Web Distribution (Wasm)
         run: ./gradlew :composeApp:wasmJsBrowserDistribution
@@ -103,23 +102,22 @@ jobs:
           channelId: live
           projectId: poker-host-550ca
 
-  # Stage 3: Publish to Play Store (After Android Success)
+  # ─── Stage 3: Android → Google Play Internal Track ────────────────────────
   publish-to-play-store:
     name: Publish to Google Play Store
     needs: [ publish-android-to-tester ]
     runs-on: ubuntu-latest
     environment: google-play-release
+    # Fix 2: only runs on manual dispatch with google_play target
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_target == 'google_play'
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
+      - uses: ./.github/actions/setup-kmp
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # Fix 7: same version code formula — must match the APK built in stage 2A
+      - name: Compute Version Code
+        id: version
+        run: echo "code=$(( ${{ github.run_number }} + ${{ env.VERSION_CODE_BASE }} ))" >> $GITHUB_OUTPUT
 
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" | base64 --decode > release.jks
@@ -127,14 +125,13 @@ jobs:
       - name: Log Version Info
         run: |
           VERSION_NAME=$(grep "versionName =" composeApp/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
-          echo -e "\e[32m##################################################\e[0m"
-          echo -e "\e[32mPUBLISHING TO GOOGLE PLAY INTERNAL TESTING\e[0m"
-          echo -e "\e[32mVERSION CODE: ${{ github.run_number }}\e[0m"
-          echo -e "\e[32mVERSION NAME: $VERSION_NAME\e[0m"
-          echo -e "\e[32m##################################################\e[0m"
+          echo "::notice::PUBLISHING TO GOOGLE PLAY INTERNAL | VERSION CODE: ${{ steps.version.outputs.code }} | VERSION NAME: $VERSION_NAME"
 
       - name: Build Release Bundle (AAB)
-        run: ./gradlew :composeApp:bundleRelease -PVERSION_CODE=${{ github.run_number }} -PSIGNING_STORE_FILE=release.jks
+        run: |
+          ./gradlew :composeApp:bundleRelease \
+                    -PVERSION_CODE=${{ steps.version.outputs.code }} \
+                    -PSIGNING_STORE_FILE=release.jks
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}

@@ -35,7 +35,7 @@ class AppConfigRepositoryImpl : AppConfigRepository {
 		private const val KEY_MIN_VERSION = "minVersionCode"
 		private const val KEY_MAINTENANCE_MODE = "isMaintenanceMode"
 
-		private const val DEFAULT_ANDROID_AD_ID = "ca-app-pub-3940256099942544/6300978111"
+		private const val DEFAULT_ANDROID_AD_ID = "ca-app-pub-2953073229838997/4239209047"
 		private const val DEFAULT_IOS_AD_ID = "ca-app-pub-3940256099942544/2934735716"
 	}
 }

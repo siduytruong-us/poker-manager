@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Payments
@@ -89,11 +90,14 @@ import pokerhost.composeapp.generated.resources.create_new_session
 import pokerhost.composeapp.generated.resources.delete
 import pokerhost.composeapp.generated.resources.delete_session
 import pokerhost.composeapp.generated.resources.delete_session_confirmation
+import pokerhost.composeapp.generated.resources.enter_session_code
+import pokerhost.composeapp.generated.resources.join
 import pokerhost.composeapp.generated.resources.join_via_code
 import pokerhost.composeapp.generated.resources.live
 import pokerhost.composeapp.generated.resources.new_session
 import pokerhost.composeapp.generated.resources.recent_sessions
 import pokerhost.composeapp.generated.resources.resume
+import pokerhost.composeapp.generated.resources.session_code
 import pokerhost.composeapp.generated.resources.session_title_optional
 import pokerhost.composeapp.generated.resources.small_blind
 import pokerhost.composeapp.generated.resources.stack
@@ -107,14 +111,17 @@ fun DashboardScreen(
 	onCreateSession: (title: String?, smallBlind: Float, bigBlind: Float) -> Unit,
 	onDeleteSession: (String) -> Unit,
 	onCompleteSession: (String) -> Unit,
+	onJoinSession: (sessionId: String) -> Unit,
 	onViewAllClick: () -> Unit,
 ) {
 	var showCreateDialog by remember { mutableStateOf(false) }
+	var showJoinDialog by remember { mutableStateOf(false) }
 	var sessionToDelete by remember { mutableStateOf<String?>(null) }
 	var sessionToComplete by remember { mutableStateOf<String?>(null) }
 	var sessionTitle by remember { mutableStateOf("") }
 	var smallBlind by remember { mutableStateOf("5") }
 	var bigBlind by remember { mutableStateOf("10") }
+	var joinCode by remember { mutableStateOf("") }
 
 	Scaffold(
 		topBar = {
@@ -210,7 +217,8 @@ fun DashboardScreen(
 									session = session,
 									isOwner = session.ownerId == state.currentUserId,
 									onClick = { onSessionClick(session.id) },
-									onComplete = { sessionToComplete = session.id }
+									onComplete = { sessionToComplete = session.id },
+									onDelete = { sessionToDelete = session.id }
 								)
 								Spacer(Modifier.height(8.dp))
 							}
@@ -237,7 +245,7 @@ fun DashboardScreen(
 								containerColor = MaterialTheme.colorScheme.surfaceVariant,
 								contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
 								modifier = Modifier.weight(1f),
-								onClick = { /* Join via code */ }
+								onClick = { showJoinDialog = true }
 							)
 						}
 					}
@@ -320,6 +328,47 @@ fun DashboardScreen(
 		)
 	}
 
+	if (showJoinDialog) {
+		AlertDialog(
+			onDismissRequest = {
+				showJoinDialog = false
+				joinCode = ""
+			},
+			title = { Text(stringResource(Res.string.join_via_code)) },
+			text = {
+				TextField(
+					value = joinCode,
+					onValueChange = { joinCode = it.trim() },
+					label = { Text(stringResource(Res.string.session_code)) },
+					placeholder = { Text(stringResource(Res.string.enter_session_code)) },
+					singleLine = true,
+				)
+			},
+			confirmButton = {
+				Button(
+					onClick = {
+						if (joinCode.isNotBlank()) {
+							onJoinSession(joinCode)
+							joinCode = ""
+							showJoinDialog = false
+						}
+					},
+					enabled = joinCode.isNotBlank()
+				) {
+					Text(stringResource(Res.string.join))
+				}
+			},
+			dismissButton = {
+				TextButton(onClick = {
+					showJoinDialog = false
+					joinCode = ""
+				}) {
+					Text(stringResource(Res.string.cancel))
+				}
+			}
+		)
+	}
+
 	if (showCreateDialog) {
 		AlertDialog(
 			onDismissRequest = { showCreateDialog = false },
@@ -385,6 +434,7 @@ private fun ActiveSessionCard(
 	isOwner: Boolean,
 	onClick: () -> Unit,
 	onComplete: () -> Unit,
+	onDelete: () -> Unit,
 ) {
 	var showMenu by remember { mutableStateOf(false) }
 
@@ -474,6 +524,25 @@ private fun ActiveSessionCard(
 										Icons.Default.CheckCircle,
 										contentDescription = null,
 										tint = MaterialTheme.colorScheme.primary
+									)
+								}
+							)
+							DropdownMenuItem(
+								text = {
+									Text(
+										stringResource(Res.string.delete),
+										color = MaterialTheme.colorScheme.error
+									)
+								},
+								onClick = {
+									showMenu = false
+									onDelete()
+								},
+								leadingIcon = {
+									Icon(
+										Icons.Default.Delete,
+										contentDescription = null,
+										tint = MaterialTheme.colorScheme.error
 									)
 								}
 							)
@@ -630,6 +699,7 @@ private fun DashboardScreenPreview(
 			onCreateSession = { _, _, _ -> },
 			onDeleteSession = {},
 			onCompleteSession = {},
+			onJoinSession = {},
 			onViewAllClick = {}
 		)
 	}

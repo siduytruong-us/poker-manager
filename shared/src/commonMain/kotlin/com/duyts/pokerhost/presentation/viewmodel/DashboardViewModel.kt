@@ -15,6 +15,7 @@ import com.duyts.pokerhost.util.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,8 +48,10 @@ class DashboardViewModel(
 			currentUserId = user?.id,
 			userPhotoUrl = user?.photoUrl,
 			appConfig = config
-		)
-	}.stateIn(
+		) as PokerSessionListUiState
+	}
+		.catch { e -> emit(PokerSessionListUiState.Error(e.message ?: "Failed to load sessions")) }
+		.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5000),
 		initialValue = PokerSessionListUiState.Loading

@@ -88,4 +88,7 @@
     <string name="break_even">BREAK EVEN</string>
     <string name="adjust">Adjust</string>
     <string name="buy_in_bullet_format"> • Buy-in: %1$s</string>
+    <string name="win_rate">Win Rate</string>
+    <string name="session_code">Session Code</string>
+    <string name="enter_session_code">Enter session ID</string>
 </resources>

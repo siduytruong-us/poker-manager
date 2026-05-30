@@ -108,6 +108,25 @@ class SessionsFirestoreService {
 		}
 	}
 
+	suspend fun transferBetweenPlayersAtomic(
+		sessionId: String,
+		fromPlayerId: String,
+		toPlayerId: String,
+		centAmount: Int,
+	) {
+		val fromRef =
+			sessionsCollection.document(sessionId).collection("players").document(fromPlayerId)
+		val toRef =
+			sessionsCollection.document(sessionId).collection("players").document(toPlayerId)
+
+		firestore.runTransaction {
+			val fromPlayer = get(fromRef).data<FirestorePlayer>()
+			val toPlayer = get(toRef).data<FirestorePlayer>()
+			update(fromRef, mapOf("adjustment" to fromPlayer.adjustment - centAmount))
+			update(toRef, mapOf("adjustment" to toPlayer.adjustment + centAmount))
+		}
+	}
+
 	suspend fun updateSession(sessionId: String, updates: Map<String, Any?>) {
 		val sessionRef = sessionsCollection.document(sessionId)
 		if (updates.isNotEmpty()) {

@@ -61,4 +61,7 @@
     <string name="profit_over_time">Beneficio a lo largo del tiempo</string>
     <string name="session_history">Historial de sesiones</string>
     <string name="no_completed_sessions">No hay sesiones completadas aún</string>
+    <string name="win_rate">Tasa de victorias</string>
+    <string name="session_code">Código de sesión</string>
+    <string name="enter_session_code">Ingresa el ID de sesión</string>
 </resources>

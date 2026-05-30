@@ -19,7 +19,7 @@ object DateTimeUtils {
 		return when (dateTime.date) {
 			today -> "Today"
 			today.minus(1, DateTimeUnit.DAY) -> "Yesterday"
-			else -> "${dateTime.date.day}/${dateTime.date.month.ordinal + 1}/${dateTime.year}"
+			else -> "${dateTime.date.dayOfMonth}/${dateTime.date.month.ordinal + 1}/${dateTime.year}"
 		}
 	}
 }

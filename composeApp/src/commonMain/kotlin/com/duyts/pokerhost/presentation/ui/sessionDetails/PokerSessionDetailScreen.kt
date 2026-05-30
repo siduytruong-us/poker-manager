@@ -103,6 +103,7 @@ fun PokerSessionDetailScreen(
 	onUpdatePlayerArchiveStatus: (playerId: String, isArchived: Boolean) -> Unit,
 	onCompleteSession: () -> Unit,
 	onShareSession: (title: String) -> Unit,
+	snackbarHostState: androidx.compose.material3.SnackbarHostState = remember { androidx.compose.material3.SnackbarHostState() },
 ) {
 	var showAddPlayerDialog by remember { mutableStateOf(false) }
 	var showTransferDialog by remember { mutableStateOf(false) }
@@ -118,6 +119,7 @@ fun PokerSessionDetailScreen(
 	val sheetState = rememberModalBottomSheetState()
 
 	Scaffold(
+		snackbarHost = { androidx.compose.material3.SnackbarHost(snackbarHostState) },
 		topBar = {
 			TopAppBar(
 				title = {

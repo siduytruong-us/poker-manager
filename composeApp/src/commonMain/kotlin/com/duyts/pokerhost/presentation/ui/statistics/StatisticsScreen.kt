@@ -58,6 +58,7 @@ import pokerhost.composeapp.generated.resources.sessions
 import pokerhost.composeapp.generated.resources.statistics
 import pokerhost.composeapp.generated.resources.total_buy_in
 import pokerhost.composeapp.generated.resources.total_cash_out
+import pokerhost.composeapp.generated.resources.win_rate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,7 +165,7 @@ fun StatisticsScreen(
 							modifier = Modifier.weight(1f)
 						)
 						StatCard(
-							label = "Win Rate",
+							label = stringResource(Res.string.win_rate),
 							value = if (state.sessionsPlayed > 0) {
 								val wins = state.performanceHistory.count { it.profit > 0 }
 								"${(wins.toFloat() / state.sessionsPlayed * 100).toInt()}%"

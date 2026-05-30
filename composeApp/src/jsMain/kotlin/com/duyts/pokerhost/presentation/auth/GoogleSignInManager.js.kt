@@ -19,10 +19,10 @@ external interface Id {
 
 @Composable
 actual fun rememberGoogleSignInLauncher(
-	onIdTokenReceived: (String) -> Unit,
+	onTokenReceived: (idToken: String, accessToken: String?) -> Unit,
 	onError: (String) -> Unit,
 ): GoogleSignInLauncher {
-	val clientId = "556290841007-ehbtbldvi00l84kpq0hb29j2gd49nlkf.apps.googleusercontent.com"
+	val clientId = WEB_GOOGLE_CLIENT_ID
 
 	return remember {
 		object : GoogleSignInLauncher {
@@ -33,7 +33,7 @@ actual fun rememberGoogleSignInLauncher(
 					config.callback = { response: dynamic ->
 						val credential = response.credential as? String
 						if (credential != null) {
-							onIdTokenReceived(credential)
+							onTokenReceived(credential, null)
 						} else {
 							onError("No credential received from Google")
 						}
